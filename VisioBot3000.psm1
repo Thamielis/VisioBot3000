@@ -1,70 +1,79 @@
-﻿$application=0
+﻿$Visio=0
 $savedShapes=@{}
 function New-VisioApplication{
 Param([switch]$hide)
-$script:application = New-Object -ComObject Visio.Application
+$script:Visio = New-Object -ComObject Visio.Application
 }
 function Get-VisioApplication{
-  return $application
+  if(!$module:Visio){
+    New-VisioApplication
+  }
+  return $Visio
 } 
 
 function Open-VisioDocument{
-Param($path)
-$documents = $application.Documents
+Param([string]$path,
+      $Visio=$module:Visio)
+$documents = $Visio.Documents
 $document = $documents.Add($path)
 
 }
 
 function New-VisioDocument{
-Param([Alias('From')][string]$path)
-Open-VisioDocument ''
+Param([Alias('From')][string]$path,
+      $Visio=$module:visio)
+Open-VisioDocument $path
 }
 function Get-VisioDocument{
-return $application.ActiveDocument
+Param($Visio=$module:Visio)
+    return $Visio.ActiveDocument
 }
 
 function New-VisioPage{
-Param($name)
-   $page=$application.ActiveDocument.Pages.Add( )
+Param([string]$name,
+      $Visio=$module:Visio)
+
+   $page=$Visio.ActiveDocument.Pages.Add( )
    if($name){
       $page.NameU=$name 
    }
    $page
 }
 function Set-VisioPage{
-Param($name)
+Param([string]$name,
+      $Visio=$module:Visio)
   $page=get-VisioPage $name
-  $application.ActiveWindow.Page=$page 
+  $Visio.ActiveWindow.Page=$page 
 }
 
 function Get-VisioPage{
 Param($name)
     if ($name) {
        try {
-       $application.ActiveDocument.Pages($name) 
+       $Visio.ActiveDocument.Pages($name) 
        } catch {
          write-warning "$name not found"
        }
     } else {
-       $application.ActivePage
+       $Visio.ActivePage
     }
 }
 
 function Remove-VisioPage{
 Param($name)
    if ($name) {
-       $application.ActiveDocument.Pages($name).Delete(0)
+       $Visio.ActiveDocument.Pages($name).Delete(0)
     } else {
-       $application.ActivePage.Delete(0)
+       $Visio.ActivePage.Delete(0)
     }
 
 }
 function Set-VisioPageLayout{
 Param([switch]$landscape,[switch]$portrait)
     if($landscape){
-     $application.ActiveDocument.PrintLandscape=(1)
+     $Visio.ActiveDocument.PrintLandscape=(1)
     } else {
-     $application.ActiveDocument.PrintLandscape=(0)
+     $Visio.ActiveDocument.PrintLandscape=(0)
     }
 }
 
@@ -86,7 +95,7 @@ function New-VisioRectangle{
 function New-VisioConnection{
 Param($from,$to)
     $from.AutoConnect($to,0)
-    (get-visiopage).Shapes('Dynamic Connector')| select -first 1
+    (get-visiopage).Shapes('Dynamic Connector')| Select-Object -first 1
 
 }
 
@@ -116,7 +125,7 @@ if($contents){
 function Import-VisioBuiltinStencil{
     if(!$script:BuiltInStencil){
         $window=(Get-VisioApplication).ActiveWindow
-        $script:BuiltInStencil = $Application.Documents.OpenEx($Application.GetBuiltInStencilFile(2,1),64)
+        $script:BuiltInStencil = $Visio.Documents.OpenEx($Visio.GetBuiltInStencilFile(2,1),64)
         $window.Activate()
     }
     $script:BuiltInStencil
@@ -125,14 +134,19 @@ function Import-VisioStencil{
 Param($path)
     if(!$script:BuiltInStencil){
         $window=(Get-VisioApplication).ActiveWindow
-        $Application.Documents.OpenEx($path,64)
+        $Visio.Documents.OpenEx($path,64)
         $window.Activate()
     }
     $$
 }
 
 function Register-VisioShape{
-Param($masterName,$path,$nickname,[switch]$builtin,$Map)
+Param([string]$masterName,
+      [string]$path,
+      [string]$nickname,
+      [switch]$builtin,
+      [HashTable]$Map,
+      $Visio=$module:Visio)
   if(!$nickname){
     $nickname=$masterName
   }
@@ -146,10 +160,9 @@ Param($masterName,$path,$nickname,[switch]$builtin,$Map)
      $stencil=Import-VisioStencil $path 
   }
   foreach($nickname in $map.Keys){
-  $newShape=$stencil.Masters | where Name -eq $map.$nickname
-  $script:SavedShapes[$nickname]=$newshape
-  new-item -Path Function:\ -Name "global`:$nickname" -value {param($x,$y) $shape=get-visioshape $nickname; $p=get-visiopage;$p.Drop($shape.PSObject.BaseObject,$x,$y)}.GetNewClosure() -force  
-
+      $newShape=$stencil.Masters | Where-Object Name -eq $map.$nickname
+      $script:SavedShapes[$nickname]=$newshape
+      new-item -Path Function:\ -Name "global`:$nickname" -value {param($x,$y) $shape=get-visioshape $nickname; $p=get-visiopage;$p.Drop($shape.PSObject.BaseObject,$x,$y)}.GetNewClosure() -force  
   } 
 
 }
@@ -157,8 +170,8 @@ Param($masterName,$path,$nickname,[switch]$builtin,$Map)
 
 
 function Get-VisioShape{
-Param($name)
-  $script:SavedShapes[$name]
+Param([string]$name)
+  $module:SavedShapes[$name]
 }
 
-export-modulemember *-*
+Export-ModuleMember *-*
