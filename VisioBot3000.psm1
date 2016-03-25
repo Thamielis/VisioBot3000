@@ -16,6 +16,7 @@ $document = $documents.Add($path)
 }
 
 function New-VisioDocument{
+Param([Alias('From')][string]$path)
 Open-VisioDocument ''
 }
 function Get-VisioDocument{
