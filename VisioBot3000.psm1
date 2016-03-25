@@ -25,9 +25,11 @@ Function Open-VisioDocument{
 }
 
 Function New-VisioDocument{
-    Param([Alias('From')][string]$path,
+    Param([string]$Path,
+    [string]$From='',
     $Visio=$script:visio)
-    Open-VisioDocument $path
+    Open-VisioDocument $From
+    $Visio.ActiveDocument.SaveAs($path)
 }
 Function Get-VisioDocument{
     Param($Visio=$script:Visio)
@@ -128,44 +130,37 @@ Function New-VisioContainer{
     }
 }
 Function Import-VisioBuiltinStencil{
-    if(!$script:BuiltInStencil){
-        $window=(Get-VisioApplication).ActiveWindow
-        $script:BuiltInStencil = $Visio.Documents.OpenEx($Visio.GetBuiltInStencilFile(2,1),64)
-        $window.Activate()
-    }
-    $script:BuiltInStencil
+Param([ValidateSet('Backgrounds','Borders','Containers','Callouts','Legends')]
+[string]$BuiltInStencil,
+[String]$Name)
+    $stencilID=@('Backgrounds','Borders','Containers','Callouts','Legends').IndexOf($BuiltInStencil)
+    $stencilPath=$Visio.GetBuiltInStencilFile($stencilID,$vis.MSDefault)
+    Import-VisioStencil -path $stencilPath -Name $Name 
 }
 Function Import-VisioStencil{
     Param([string]$path,
-          [string]$Name)
-        $stencil=$Visio.Documents.OpenEx($path,$vis.OpenHidden)
-        $script:stencils[$Name]=$stencil  
+          [string]$Name,
+          [switch]$BuiltIn)
+        if($BuiltIn){
+            Import-VisioBuiltinStencil -BuiltInStencil $Path -Name $Name 
+        } else {
+            $stencil=$Visio.Documents.OpenEx($path,$vis.OpenHidden)
+            $script:stencils[$Name]=$stencil
+        }  
 }
 
 Function Register-VisioShape{
-    Param([string]$masterName,
-        [string]$path,
-        [string]$nickname,
-        [switch]$builtin,
-        [HashTable]$Map,
-    $Visio=$script:Visio)
-    if(!$nickname){
-        $nickname=$masterName
-    }
-    if(!$map){
-        $map=@{$nickName=$masterName}
-    }
+    Param([string]$name,
+         [Alias('From')][string]$StencilName,
+         [string]$masterName,
+         [Double]$x,
+         [Double]$y,
+         $Visio=$script:Visio)
+ 
 
-    if($builtin){
-        $stencil=Import-VisioBuiltinStencil
-    } else {
-        $stencil=Import-VisioStencil $path 
-    }
-    foreach($nickname in $map.Keys){
-        $newShape=$stencil.Masters | Where-Object Name -eq $map.$nickname
-        $script:Shapes[$nickname]=$newshape
-        new-item -Path Function:\ -Name "global`:$nickname" -value {param($x,$y) $shape=get-visioshape $nickname; $p=get-visiopage;$p.Drop($shape.PSObject.BaseObject,$x,$y)}.GetNewClosure() -force  
-    } 
+        $newShape=$stencils[$StencilName].Masters | Where-Object Name -eq $masterName
+        $script:Shapes[$name]=$newshape
+        new-item -Path Function:\ -Name "global`:$name" -value {param($x,$y) $shape=get-visioshape $name; $p=get-visiopage;$p.Drop($shape.PSObject.BaseObject,$x,$y)}.GetNewClosure() -force  
 
 }
 
@@ -178,6 +173,4 @@ Function Get-VisioShape{
 
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
-
-
-Export-ModuleMember *-* -alias *
+New-Alias -Name Stencil -value Import-VisioStencil
