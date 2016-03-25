@@ -129,22 +129,25 @@ Function New-VisioContainer{
   
     }
 }
-Function Import-VisioBuiltinStencil{
+Function Register-VisioBuiltinStencil{
 Param([ValidateSet('Backgrounds','Borders','Containers','Callouts','Legends')]
 [string]$BuiltInStencil,
 [String]$Name)
     $stencilID=@('Backgrounds','Borders','Containers','Callouts','Legends').IndexOf($BuiltInStencil)
     $stencilPath=$Visio.GetBuiltInStencilFile($stencilID,$vis.MSDefault)
-    Import-VisioStencil -path $stencilPath -Name $Name 
+    Import-VisioStencil -Path $stencilPath -Name $Name 
 }
-Function Import-VisioStencil{
-    Param([string]$path,
-          [string]$Name,
+Function Register-VisioStencil{
+    Param([string]$Name,
+          [Alias('From')][string]$Path,
           [switch]$BuiltIn)
         if($BuiltIn){
-            Import-VisioBuiltinStencil -BuiltInStencil $Path -Name $Name 
+            if(!$Path){
+                $Path=$Name
+            }
+            Register-VisioBuiltinStencil -BuiltInStencil $Path -Name $Name 
         } else {
-            $stencil=$Visio.Documents.OpenEx($path,$vis.OpenHidden)
+            $stencil=$Visio.Documents.OpenEx($Path,$vis.OpenHidden)
             $script:stencils[$Name]=$stencil
         }  
 }
@@ -173,4 +176,5 @@ Function Get-VisioShape{
 
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
-New-Alias -Name Stencil -value Import-VisioStencil
+New-Alias -Name Stencil -Value Register-VisioStencil
+New-Alias -Name Shape -Value Register-VisioShape
