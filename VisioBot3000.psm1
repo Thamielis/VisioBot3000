@@ -1,10 +1,11 @@
 ﻿$Visio=0
 $savedShapes=@{}
 Function New-VisioApplication{
-    Param([switch]$hide)
-    $script:Visio = New-Object -ComObject Visio.Application
-    if($hide){
-        $Visio.Window.Visible=$false
+    Param([switch]$Hide)
+    if ($Hide){
+        $script:Visio=New-Object -ComObject Visio.InvisibleApp 
+    } else {
+        $script:Visio = New-Object -ComObject Visio.Application
     }
 }
 Function Get-VisioApplication{
