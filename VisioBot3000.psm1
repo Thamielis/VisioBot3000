@@ -3,9 +3,12 @@ $savedShapes=@{}
 Function New-VisioApplication{
     Param([switch]$hide)
     $script:Visio = New-Object -ComObject Visio.Application
+    if($hide){
+        $Visio.Window.Visible=$false
+    }
 }
 Function Get-VisioApplication{
-    if(!$module:Visio){
+    if(!$script:Visio){
         New-VisioApplication
     }
     return $Visio
@@ -13,7 +16,7 @@ Function Get-VisioApplication{
 
 Function Open-VisioDocument{
     Param([string]$path,
-    $Visio=$module:Visio)
+    $Visio=$script:Visio)
     $documents = $Visio.Documents
     $document = $documents.Add($path)
 
@@ -21,17 +24,17 @@ Function Open-VisioDocument{
 
 Function New-VisioDocument{
     Param([Alias('From')][string]$path,
-    $Visio=$module:visio)
+    $Visio=$script:visio)
     Open-VisioDocument $path
 }
 Function Get-VisioDocument{
-    Param($Visio=$module:Visio)
+    Param($Visio=$script:Visio)
     return $Visio.ActiveDocument
 }
 
 Function New-VisioPage{
     Param([string]$name,
-    $Visio=$module:Visio)
+    $Visio=$script:Visio)
 
     $page=$Visio.ActiveDocument.Pages.Add( )
     if($name){
@@ -41,7 +44,7 @@ Function New-VisioPage{
 }
 Function Set-VisioPage{
     Param([string]$name,
-    $Visio=$module:Visio)
+    $Visio=$script:Visio)
     $page=get-VisioPage $name
     $Visio.ActiveWindow.Page=$page 
 }
@@ -131,13 +134,15 @@ Function Import-VisioBuiltinStencil{
     $script:BuiltInStencil
 }
 Function Import-VisioStencil{
-    Param($path)
+    Param([string]$path,
+          [string]$Name)
+          
     if(!$script:BuiltInStencil){
         $window=(Get-VisioApplication).ActiveWindow
-        $Visio.Documents.OpenEx($path,64)
+        $Visio.Documents.OpenEx($path,$vis.OpenHidden)
         $window.Activate()
     }
-    $$
+    
 }
 
 Function Register-VisioShape{
@@ -146,7 +151,7 @@ Function Register-VisioShape{
         [string]$nickname,
         [switch]$builtin,
         [HashTable]$Map,
-    $Visio=$module:Visio)
+    $Visio=$script:Visio)
     if(!$nickname){
         $nickname=$masterName
     }
@@ -171,7 +176,11 @@ Function Register-VisioShape{
 
 Function Get-VisioShape{
     Param([string]$name)
-    $module:SavedShapes[$name]
+    $script:SavedShapes[$name]
 }
 
-Export-ModuleMember *-*
+#Aliases
+New-Alias -Name Diagram -Value New-VisioDocument
+
+
+Export-ModuleMember *-* -alias *
