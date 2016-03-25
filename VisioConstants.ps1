@@ -2933,6 +2933,9 @@ ArcSweepFlagConcave = 0
 ;BuiltinStencilCallouts = 3 
 ;BuiltinStencilBackgrounds = 0 
 ;BuiltinStencilBorders = 1 
+;BuiltinStencilContainers = 2
+;BuiltinStencilLegends = 4
+
 ;Drawing = 1 
 ;DrawingAddon = 8 
 ;Icon = 4 
