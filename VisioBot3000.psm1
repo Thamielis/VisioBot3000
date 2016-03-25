@@ -1,5 +1,6 @@
 ﻿$Visio=0
-$savedShapes=@{}
+$Shapes=@{}
+$Stencils
 Function New-VisioApplication{
     Param([switch]$Hide)
     if ($Hide){
@@ -84,7 +85,7 @@ Function Set-VisioPageLayout{
 Function New-VisioShape{
     Param($master,$x0,$y0 )
     if($master -is [string]){
-        $master=$script:SavedShapes[$master]
+        $master=$script:Shapes[$master]
     }
     $p=get-visioPage
     $p.Drop($master.PSObject.BaseObject,$x0,$y0)
@@ -137,13 +138,8 @@ Function Import-VisioBuiltinStencil{
 Function Import-VisioStencil{
     Param([string]$path,
           [string]$Name)
-          
-    if(!$script:BuiltInStencil){
-        $window=(Get-VisioApplication).ActiveWindow
-        $Visio.Documents.OpenEx($path,$vis.OpenHidden)
-        $window.Activate()
-    }
-    
+        $stencil=$Visio.Documents.OpenEx($path,$vis.OpenHidden)
+        $script:stencils[$Name]=$stencil  
 }
 
 Function Register-VisioShape{
@@ -167,7 +163,7 @@ Function Register-VisioShape{
     }
     foreach($nickname in $map.Keys){
         $newShape=$stencil.Masters | Where-Object Name -eq $map.$nickname
-        $script:SavedShapes[$nickname]=$newshape
+        $script:Shapes[$nickname]=$newshape
         new-item -Path Function:\ -Name "global`:$nickname" -value {param($x,$y) $shape=get-visioshape $nickname; $p=get-visiopage;$p.Drop($shape.PSObject.BaseObject,$x,$y)}.GetNewClosure() -force  
     } 
 
