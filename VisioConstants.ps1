@@ -2930,10 +2930,10 @@ ArcSweepFlagConcave = 0
 ;Application = 5 
 ;DockedStencilAddon = 11 
 ;DockedStencilBuiltIn = 7 
-;BuiltinStencilCallouts = 3 
 ;BuiltinStencilBackgrounds = 0 
 ;BuiltinStencilBorders = 1 
 ;BuiltinStencilContainers = 2
+;BuiltinStencilCallouts = 3 
 ;BuiltinStencilLegends = 4
 
 ;Drawing = 1 
