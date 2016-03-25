@@ -1,6 +1,7 @@
-﻿$Visio=0
+﻿Set-StrictMode -Version Latest
+$Visio=0
 $Shapes=@{}
-$Stencils
+$Stencils=@{}
 Function New-VisioApplication{
     Param([switch]$Hide)
     if ($Hide){
@@ -85,12 +86,12 @@ Function Set-VisioPageLayout{
 }
 
 Function New-VisioShape{
-    Param($master,$x0,$y0 )
+    Param($master,$x,$y )
     if($master -is [string]){
         $master=$script:Shapes[$master]
     }
     $p=get-visioPage
-    $p.Drop($master.PSObject.BaseObject,$x0,$y0)
+    $p.Drop($master.PSObject.BaseObject,$x,$y)
 }
 
 Function New-VisioRectangle{
@@ -155,15 +156,12 @@ Function Register-VisioStencil{
 Function Register-VisioShape{
     Param([string]$name,
          [Alias('From')][string]$StencilName,
-         [string]$masterName,
-         [Double]$x,
-         [Double]$y,
-         $Visio=$script:Visio)
+         [string]$masterName)
  
 
         $newShape=$stencils[$StencilName].Masters | Where-Object Name -eq $masterName
         $script:Shapes[$name]=$newshape
-        new-item -Path Function:\ -Name "global`:$name" -value {param($x,$y) $shape=get-visioshape $name; $p=get-visiopage;$p.Drop($shape.PSObject.BaseObject,$x,$y)}.GetNewClosure() -force  
+        new-item -Path Function:\ -Name "global`:$name" -value {param($x,$y) $shape=get-visioshape $name; $p=get-visiopage;$p.Drop($shape.PSObject.BaseObject,$x,$y)}.GetNewClosure() -force  | out-null
 
 }
 
