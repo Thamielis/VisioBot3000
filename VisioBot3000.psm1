@@ -20,6 +20,10 @@ Function Get-VisioApplication{
 Function Open-VisioDocument{
     Param([string]$path,
     $Visio=$script:Visio)
+    if(!$Visio){
+        New-VisioApplication
+        $Visio=$script:Visio
+    }
     $documents = $Visio.Documents
     $document = $documents.Add($path)
 
@@ -29,6 +33,10 @@ Function New-VisioDocument{
     Param([string]$Path,
     [string]$From='',
     $Visio=$script:visio)
+    if(!$Visio){
+        New-VisioApplication
+        $Visio=$script:Visio
+    }
     Open-VisioDocument $From
     $Visio.ActiveDocument.SaveAs($path)
 }
@@ -86,12 +94,14 @@ Function Set-VisioPageLayout{
 }
 
 Function New-VisioShape{
-    Param($master,$x,$y )
+    Param($master,$label,$x=0,$y=0 )
     if($master -is [string]){
         $master=$script:Shapes[$master]
     }
     $p=get-visioPage
-    $p.Drop($master.PSObject.BaseObject,$x,$y)
+    $shape=$p.Drop($master.PSObject.BaseObject,$x,$y)
+    $shape.Text=$label
+    write-output $shape
 }
 
 Function New-VisioRectangle{
@@ -112,17 +122,14 @@ Function New-VisioContainer{
         [Scriptblock]$contents,
     $shape)
     $page=Get-VisioPage
-    if(!$shape){
-        Load-VisioBuiltinStencil
-        $shape = $script:BuiltInStencil.Masters.ItemFromID(2)
-    }
     if($contents){
-        $containedObjects=& $contents
-
-        $droppedContainer=$page.Drop($shape,0,0)
-        $containedObjects | % { 
+        [array]$containedObjects=& $contents
+        $firstShape=$containedObjects[0]
+        $droppedContainer=$page.DropContainer($shape,$firstShape)
+        $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
+        $containedObjects | select-object -Skip 1 | % { 
             $droppedcontainer.ContainerProperties.AddMember($_,1)
-        }
+        }        
         $droppedContainer.ContainerProperties.FitToContents()
         $droppedContainer.Text=$label
         $droppedContainer.Name=$label
@@ -130,6 +137,7 @@ Function New-VisioContainer{
   
     }
 }
+
 Function Register-VisioBuiltinStencil{
 Param([ValidateSet('Backgrounds','Borders','Containers','Callouts','Legends')]
 [string]$BuiltInStencil,
@@ -161,18 +169,29 @@ Function Register-VisioShape{
 
         $newShape=$stencils[$StencilName].Masters | Where-Object Name -eq $masterName
         $script:Shapes[$name]=$newshape
-        new-item -Path Function:\ -Name "global`:$name" -value {param($x,$y) $shape=get-visioshape $name; $p=get-visiopage;$p.Drop($shape.PSObject.BaseObject,$x,$y)}.GetNewClosure() -force  | out-null
+        new-item -Path Function:\ -Name "global`:$name" -value {param($label, $x,$y) $shape=get-visioshape $name; New-VisioShape $shape $label $x $y}.GetNewClosure() -force  | out-null
+
+}
+Function Register-VisioContainer{
+    Param([string]$name,
+         [Alias('From')][string]$StencilName,
+         [string]$masterName)
+ 
+
+        $newShape=$stencils[$StencilName].Masters | Where-Object Name -eq $masterName
+        $script:Shapes[$name]=$newshape
+        new-item -Path Function:\ -Name "global`:$name" -value {param($label,$contents) $shape=get-visioshape $name; New-VisioContainer  $label $contents $shape}.GetNewClosure() -force  | out-null
 
 }
 
 
-
 Function Get-VisioShape{
     Param([string]$name)
-    $script:SavedShapes[$name]
+    $script:Shapes[$name]
 }
 
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
 New-Alias -Name Stencil -Value Register-VisioStencil
 New-Alias -Name Shape -Value Register-VisioShape
+New-Alias -Name Container -Value Register-VisioContainer
