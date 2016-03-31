@@ -102,6 +102,7 @@ Function New-VisioShape{
     $shape=$p.Drop($master.PSObject.BaseObject,$x,$y)
     $shape.Name=$label
     $shape.Text=$label
+    New-Variable -Name $label -Value $shape -Scope Global -Force
     write-output $shape
 }
 
@@ -133,6 +134,8 @@ Function New-VisioConnector{
     $connector.CellsSRC(1,23,10) = 16
     $connector.CellsSRC(1,23,19) = 1 
 
+    New-Variable -Name $label -Value $connector -Scope Global -Force
+
     if($Arrow){
          $connector.Cells('EndArrow').Formula = '=5'
          if($bidirectional){ 
@@ -160,6 +163,8 @@ Function New-VisioContainer{
         $droppedContainer
   
     }
+    New-Variable -Name $label -Value $droppedContainer -Scope Global -Force
+
 }
 
 Function Register-VisioBuiltinStencil{
