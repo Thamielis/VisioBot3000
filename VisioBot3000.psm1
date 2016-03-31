@@ -134,8 +134,6 @@ Function New-VisioConnector{
     $connector.CellsSRC(1,23,10) = 16
     $connector.CellsSRC(1,23,19) = 1 
 
-    New-Variable -Name $label -Value $connector -Scope Global -Force
-
     if($Arrow){
          $connector.Cells('EndArrow').Formula = '=5'
          if($bidirectional){ 
