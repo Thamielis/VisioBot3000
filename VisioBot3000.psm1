@@ -100,6 +100,7 @@ Function New-VisioShape{
     }
     $p=get-visioPage
     $shape=$p.Drop($master.PSObject.BaseObject,$x,$y)
+    $shape.Name=$label
     $shape.Text=$label
     write-output $shape
 }
@@ -110,11 +111,34 @@ Function New-VisioRectangle{
     $p.DrawRectangle($x0,$y0,$x1,$y1)
 }
 
-Function New-VisioConnection{
-    Param($from,$to)
+Function New-VisioConnector{
+    Param($from,
+          $to,
+          $Label,
+          [System.Drawing.Color]$color,
+          [switch]$Arrow,
+          [switch]$bidirectional)
+    $CurrentPage=Get-VisioPage
+    if($from -is [string]){
+        $from=$CurrentPage.Shapes[$from]
+    }
+    if($to -is [string]){
+        $to=$CurrentPage.Shapes[$to]
+    }
     $from.AutoConnect($to,0)
-    (get-visiopage).Shapes('Dynamic Connector')| Select-Object -first 1
 
+    $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
+    $connector.Text=$label
+    $connector.CellsU('LineColor').Formula="rgb($($color.R),$($color.G),$($color.B))"
+    $connector.CellsSRC(1,23,10) = 16
+    $connector.CellsSRC(1,23,19) = 1 
+
+    if($Arrow){
+         $connector.Cells('EndArrow').Formula = '=5'
+         if($bidirectional){ 
+            $connector.Cells(‘BeginArrow').Formula = '=5' 
+         }
+    }
 }
 
 Function New-VisioContainer{
@@ -183,6 +207,13 @@ Function Register-VisioContainer{
         new-item -Path Function:\ -Name "global`:$name" -value {param($label,$contents) $shape=get-visioshape $name; New-VisioContainer  $label $contents $shape}.GetNewClosure() -force  | out-null
 
 }
+Function Register-VisioConnector{
+    Param([string]$name,
+          [System.Drawing.Color]$color,
+          [switch]$Arrow,
+          [switch]$bidirectional)
+         new-item -Path Function:\ -Name "global`:$name" -value {param($from,$to) New-VisioConnector $from $to $name $color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent}.GetNewClosure() -force  | out-null
+}
 
 
 Function Get-VisioShape{
@@ -195,3 +226,4 @@ New-Alias -Name Diagram -Value New-VisioDocument
 New-Alias -Name Stencil -Value Register-VisioStencil
 New-Alias -Name Shape -Value Register-VisioShape
 New-Alias -Name Container -Value Register-VisioContainer
+New-Alias -Name Connector -Value Register-VisioConnector
