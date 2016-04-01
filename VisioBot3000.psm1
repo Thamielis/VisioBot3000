@@ -268,6 +268,15 @@ Function Get-VisioShapeData{
     $shape.Cells("Prop.$Name").Formula="`"$value`""
 }
 
+Function Complete-Diagram{
+    Param([switch]$Close)
+
+    $Visio.ActiveDocument.Save()
+    if($Close){
+        $Visio.Quit()
+    }
+}
+
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
 New-Alias -Name Stencil -Value Register-VisioStencil

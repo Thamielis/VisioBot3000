@@ -29,3 +29,5 @@ Logical MyFarm {
 }
 SQL -From PrimaryServer -To BackupServer
 Hyperlink $BackupServer -link http://google.com
+
+Complete-Diagram 
