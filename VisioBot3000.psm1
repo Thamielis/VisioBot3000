@@ -253,6 +253,21 @@ Function New-VisioSelection{
     $sel
 }
 
+
+Function Set-VisioShapeData{
+    Param($Shape,
+          $Name,
+          $Value)
+    $shape.Cells("Prop.$Name").Formula="`"$value`""
+}
+
+Function Get-VisioShapeData{
+    Param($Shape,
+          $Name,
+          $Value)
+    $shape.Cells("Prop.$Name").Formula="`"$value`""
+}
+
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
 New-Alias -Name Stencil -Value Register-VisioStencil
