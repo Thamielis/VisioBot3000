@@ -223,6 +223,17 @@ Function Get-VisioShape{
     Param([string]$name)
     $script:Shapes[$name]
 }
+Function New-VisioHyperlink{
+Param($shape,
+      $link)
+    $CurrentPage=Get-VisioPage
+    if($shape -is [string]){
+        $shape=$CurrentPage.Shapes[$shape]
+    }
+    $linkObject=$shape.AddHyperLink()
+    $linkObject.Address=$link
+
+}
 
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
@@ -230,3 +241,4 @@ New-Alias -Name Stencil -Value Register-VisioStencil
 New-Alias -Name Shape -Value Register-VisioShape
 New-Alias -Name Container -Value Register-VisioContainer
 New-Alias -Name Connector -Value Register-VisioConnector
+New-Alias -Name HyperLink -Value New-VisioHyperlink
