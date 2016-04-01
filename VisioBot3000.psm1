@@ -235,6 +235,24 @@ Param($shape,
 
 }
 
+Function New-VisioSelection{
+    Param($Objects,[switch]$Visible)
+    $V=Get-VisioApplication
+    $sel=$v.ActiveWindow.Selection
+    if($visible){
+        $sel=$v.ActiveWindow
+    }
+    $sel.DeselectAll()
+    $CurrentPage=Get-VisioPage
+    foreach($o in $objects){
+        if($o -is [string]){
+         $o=$CurrentPage.Shapes[$o]
+       }
+       $sel.Select($o,2)
+    }
+    $sel
+}
+
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
 New-Alias -Name Stencil -Value Register-VisioStencil
