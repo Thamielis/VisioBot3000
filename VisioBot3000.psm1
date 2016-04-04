@@ -1,8 +1,13 @@
 ﻿Set-StrictMode -Version Latest
+
+#module level variables
 $Visio=0
 $Shapes=@{}
 $Stencils=@{}
+
+
 Function New-VisioApplication{
+[CmdletBinding()]
     Param([switch]$Hide)
     if ($Hide){
         $script:Visio=New-Object -ComObject Visio.InvisibleApp 
@@ -11,6 +16,8 @@ Function New-VisioApplication{
     }
 }
 Function Get-VisioApplication{
+[CmdletBinding()]
+Param()
     if(!$script:Visio){
         New-VisioApplication
     }
@@ -18,7 +25,8 @@ Function Get-VisioApplication{
 } 
 
 Function Open-VisioDocument{
-    Param([string]$path,
+[CmdletBinding()]
+Param([string]$path,
     $Visio=$script:Visio)
     if(!$Visio){
         New-VisioApplication
@@ -30,6 +38,7 @@ Function Open-VisioDocument{
 }
 
 Function New-VisioDocument{
+[CmdletBinding()]
     Param([string]$Path,
     [string]$From='',
     $Visio=$script:visio)
@@ -41,11 +50,13 @@ Function New-VisioDocument{
     $Visio.ActiveDocument.SaveAs($path)
 }
 Function Get-VisioDocument{
+[CmdletBinding()]
     Param($Visio=$script:Visio)
     return $Visio.ActiveDocument
 }
 
 Function New-VisioPage{
+[CmdletBinding()]
     Param([string]$name,
     $Visio=$script:Visio)
 
@@ -56,6 +67,7 @@ Function New-VisioPage{
     $page
 }
 Function Set-VisioPage{
+[CmdletBinding()]
     Param([string]$name,
     $Visio=$script:Visio)
     $page=get-VisioPage $name
@@ -63,6 +75,7 @@ Function Set-VisioPage{
 }
 
 Function Get-VisioPage{
+[CmdletBinding()]
     Param($name)
     if ($name) {
         try {
@@ -76,6 +89,7 @@ Function Get-VisioPage{
 }
 
 Function Remove-VisioPage{
+[CmdletBinding()]
     Param($name)
     if ($name) {
         $Visio.ActiveDocument.Pages($name).Delete(0)
@@ -85,6 +99,7 @@ Function Remove-VisioPage{
 
 }
 Function Set-VisioPageLayout{
+[CmdletBinding()]
     Param([switch]$landscape,[switch]$portrait)
     if($landscape){
         $Visio.ActiveDocument.PrintLandscape=(1)
@@ -94,6 +109,7 @@ Function Set-VisioPageLayout{
 }
 
 Function New-VisioShape{
+[CmdletBinding()]
     Param($master,$label,$x=0,$y=0 )
     if($master -is [string]){
         $master=$script:Shapes[$master]
@@ -107,12 +123,14 @@ Function New-VisioShape{
 }
 
 Function New-VisioRectangle{
+[CmdletBinding()]
     Param($x0,$y0,$x1,$y1)
     $p=get-visioPage
     $p.DrawRectangle($x0,$y0,$x1,$y1)
 }
 
 Function New-VisioConnector{
+[CmdletBinding()]
     Param($from,
           $to,
           $Label,
@@ -143,6 +161,7 @@ Function New-VisioConnector{
 }
 
 Function New-VisioContainer{
+[CmdletBinding()]
     Param( [string]$label,
         [Scriptblock]$contents,
     $shape)
@@ -166,6 +185,7 @@ Function New-VisioContainer{
 }
 
 Function Register-VisioBuiltinStencil{
+[CmdletBinding()]
 Param([ValidateSet('Backgrounds','Borders','Containers','Callouts','Legends')]
 [string]$BuiltInStencil,
 [String]$Name)
@@ -174,6 +194,7 @@ Param([ValidateSet('Backgrounds','Borders','Containers','Callouts','Legends')]
     Import-VisioStencil -Path $stencilPath -Name $Name 
 }
 Function Register-VisioStencil{
+[CmdletBinding()]
     Param([string]$Name,
           [Alias('From')][string]$Path,
           [switch]$BuiltIn)
@@ -189,6 +210,7 @@ Function Register-VisioStencil{
 }
 
 Function Register-VisioShape{
+[CmdletBinding()]
     Param([string]$name,
          [Alias('From')][string]$StencilName,
          [string]$masterName)
@@ -200,6 +222,7 @@ Function Register-VisioShape{
 
 }
 Function Register-VisioContainer{
+[CmdletBinding()]
     Param([string]$name,
          [Alias('From')][string]$StencilName,
          [string]$masterName)
@@ -211,6 +234,7 @@ Function Register-VisioContainer{
 
 }
 Function Register-VisioConnector{
+[CmdletBinding()]
     Param([string]$name,
           [System.Drawing.Color]$color,
           [switch]$Arrow,
@@ -220,10 +244,12 @@ Function Register-VisioConnector{
 
 
 Function Get-VisioShape{
+[CmdletBinding()]
     Param([string]$name)
     $script:Shapes[$name]
 }
 Function New-VisioHyperlink{
+[CmdletBinding()]
 Param($shape,
       $link)
     $CurrentPage=Get-VisioPage
@@ -236,6 +262,7 @@ Param($shape,
 }
 
 Function New-VisioSelection{
+[CmdletBinding()]
     Param($Objects,[switch]$Visible)
     $V=Get-VisioApplication
     $sel=$v.ActiveWindow.Selection
@@ -255,6 +282,7 @@ Function New-VisioSelection{
 
 
 Function Set-VisioShapeData{
+[CmdletBinding()]
     Param($Shape,
           $Name,
           $Value)
@@ -262,6 +290,7 @@ Function Set-VisioShapeData{
 }
 
 Function Get-VisioShapeData{
+[CmdletBinding()]
     Param($Shape,
           $Name,
           $Value)
@@ -269,6 +298,7 @@ Function Get-VisioShapeData{
 }
 
 Function Complete-Diagram{
+[CmdletBinding()]
     Param([switch]$Close)
 
     $Visio.ActiveDocument.Save()
