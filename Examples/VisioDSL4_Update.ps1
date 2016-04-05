@@ -18,6 +18,7 @@ Logical MyFarm {
 		    WebServer PrimaryServer 50 50
 	    }
     }
+
     Location DRSite {
         Domain MyDomain {
 		    WebServer BackupServer 50 80
