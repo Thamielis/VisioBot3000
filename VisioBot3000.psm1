@@ -129,7 +129,7 @@ Function New-VisioShape{
     if($update){
       $DroppedShape=$p.Shapes | Where-Object {$_.Name -eq $label}
     }
-    if(-not (get-variable DroppedShape -Scope Local)){
+    if(-not (get-variable DroppedShape -Scope Local -ErrorAction Ignore)){
         $DroppedShape=$p.Drop($master.PSObject.BaseObject,$x,$y)
     } else {
         write-verbose "Existing shape <$label> found"
@@ -182,21 +182,33 @@ Function New-VisioContainer{
 [CmdletBinding()]
     Param( [string]$label,
         [Scriptblock]$contents,
-    $shape)
+    $shape,
+    [switch]$update)
     $page=Get-VisioPage
     if($contents){
         [array]$containedObjects=& $contents
         $firstShape=$containedObjects[0]
-        $droppedContainer=$page.DropContainer($shape,$firstShape)
+        if($update){
+           $droppedContainer=$page.Shapes | Where-Object {$_.Name -eq $label}
+        }
+        if(get-variable droppedContainer -Scope Local -ErrorAction Ignore){
+          If($droppedContainer.ContainerProperties.GetMemberShapes(16+2) -notcontains $firstShape.ID){
+            $droppedcontainer.ContainerProperties.AddMember($firstShape,2)
+          }
+        } else {
+            $droppedContainer=$page.DropContainer($shape,$firstShape)
+        } 
         $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
         $containedObjects | select-object -Skip 1 | % { 
-            $droppedcontainer.ContainerProperties.AddMember($_,1)
+            if(-not $update -or ($droppedContainer.ContainerProperties.GetMemberShapes(16+2) -notcontains $_.ID)){
+              $droppedcontainer.ContainerProperties.AddMember($_,1)
+            }
         }        
         $droppedContainer.ContainerProperties.FitToContents()
         $droppedContainer.Text=$label
         $droppedContainer.Name=$label
         $droppedContainer
-  
+
     }
     New-Variable -Name $label -Value $droppedContainer -Scope Global -Force
 
