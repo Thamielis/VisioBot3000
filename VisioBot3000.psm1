@@ -27,14 +27,17 @@ Param()
 Function Open-VisioDocument{
 [CmdletBinding()]
 Param([string]$path,
-    $Visio=$script:Visio)
+    $Visio=$script:Visio,
+    [switch]$Update)
     if(!$Visio){
         New-VisioApplication
         $Visio=$script:Visio
     }
     $documents = $Visio.Documents
     $document = $documents.Add($path)
-
+    if($Update){
+        $PSDefaultParameterValues['*-Visio*:Default']=$true
+    }
 }
 
 Function New-VisioDocument{
@@ -110,16 +113,23 @@ Function Set-VisioPageLayout{
 
 Function New-VisioShape{
 [CmdletBinding()]
-    Param($master,$label,$x=0,$y=0 )
+    Param($master,$label,$x=0,$y=0,[switch]$Update )
     if($master -is [string]){
         $master=$script:Shapes[$master]
     }
-    $p=get-visioPage
-    $shape=$p.Drop($master.PSObject.BaseObject,$x,$y)
-    $shape.Name=$label
-    $shape.Text=$label
-    New-Variable -Name $label -Value $shape -Scope Global -Force
-    write-output $shape
+    $p=get-VisioPage
+    if($update){
+      $DroppedShape=$p.Shapes | Where-Object {$_.Name -eq $label}
+    }
+    if(-not (get-variable DroppedShape -Scope Local)){
+        $DroppedShape=$p.Drop($master.PSObject.BaseObject,$x,$y)
+    } else {
+        write-verbose "Existing shape <$label> found"
+    }
+    $DroppedShape.Name=$label
+    $DroppedShape.Text=$label
+    New-Variable -Name $label -Value $DroppedShape -Scope Global -Force
+    write-output $DroppedShape
 }
 
 Function New-VisioRectangle{
