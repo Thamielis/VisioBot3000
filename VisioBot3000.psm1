@@ -44,12 +44,20 @@ Function New-VisioDocument{
 [CmdletBinding()]
     Param([string]$Path,
     [string]$From='',
-    $Visio=$script:visio)
+    $Visio=$script:visio,
+    [switch]$Update)
     if(!$Visio){
         New-VisioApplication
         $Visio=$script:Visio
     }
-    Open-VisioDocument $From
+    if($Update){
+        if($From -ne ''){
+            Write-Warning 'New-VisioDocument: -From ignored when -Update is present'
+        }
+        Open-VisioDocument $path -Update
+    } else {
+        Open-VisioDocument $From
+    }
     $Visio.ActiveDocument.SaveAs($path)
 }
 Function Get-VisioDocument{
@@ -311,7 +319,7 @@ Function Complete-Diagram{
 [CmdletBinding()]
     Param([switch]$Close)
 
-    $Visio.ActiveDocument.Save()
+    $Visio.ActiveDocument.Save() 
     if($Close){
         $Visio.Quit()
     }
