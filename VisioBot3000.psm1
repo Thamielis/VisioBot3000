@@ -27,26 +27,37 @@ Param()
 Function Open-VisioDocument{
 [CmdletBinding()]
 Param([string]$path,
-    $Visio=$script:Visio)
+    $Visio=$script:Visio,
+    [switch]$Update)
     if(!$Visio){
         New-VisioApplication
         $Visio=$script:Visio
     }
     $documents = $Visio.Documents
     $document = $documents.Add($path)
-
+    if($Update){
+        $PSDefaultParameterValues['*-Visio*:Default']=$true
+    }
 }
 
 Function New-VisioDocument{
 [CmdletBinding()]
     Param([string]$Path,
     [string]$From='',
-    $Visio=$script:visio)
+    $Visio=$script:visio,
+    [switch]$Update)
     if(!$Visio){
         New-VisioApplication
         $Visio=$script:Visio
     }
-    Open-VisioDocument $From
+    if($Update){
+        if($From -ne ''){
+            Write-Warning 'New-VisioDocument: -From ignored when -Update is present'
+        }
+        Open-VisioDocument $path -Update
+    } else {
+        Open-VisioDocument $From
+    }
     $Visio.ActiveDocument.SaveAs($path)
 }
 Function Get-VisioDocument{
@@ -110,16 +121,23 @@ Function Set-VisioPageLayout{
 
 Function New-VisioShape{
 [CmdletBinding()]
-    Param($master,$label,$x=0,$y=0 )
+    Param($master,$label,$x=0,$y=0,[switch]$Update )
     if($master -is [string]){
         $master=$script:Shapes[$master]
     }
-    $p=get-visioPage
-    $shape=$p.Drop($master.PSObject.BaseObject,$x,$y)
-    $shape.Name=$label
-    $shape.Text=$label
-    New-Variable -Name $label -Value $shape -Scope Global -Force
-    write-output $shape
+    $p=get-VisioPage
+    if($update){
+      $DroppedShape=$p.Shapes | Where-Object {$_.Name -eq $label}
+    }
+    if(-not (get-variable DroppedShape -Scope Local -ErrorAction Ignore)){
+        $DroppedShape=$p.Drop($master.PSObject.BaseObject,$x,$y)
+    } else {
+        write-verbose "Existing shape <$label> found"
+    }
+    $DroppedShape.Name=$label
+    $DroppedShape.Text=$label
+    New-Variable -Name $label -Value $DroppedShape -Scope Global -Force
+    write-output $DroppedShape
 }
 
 Function New-VisioRectangle{
@@ -136,7 +154,8 @@ Function New-VisioConnector{
           $Label,
           [System.Drawing.Color]$color,
           [switch]$Arrow,
-          [switch]$bidirectional)
+          [switch]$bidirectional,
+          [switch]$Update)
     $CurrentPage=Get-VisioPage
     if($from -is [string]){
         $from=$CurrentPage.Shapes[$from]
@@ -144,19 +163,30 @@ Function New-VisioConnector{
     if($to -is [string]){
         $to=$CurrentPage.Shapes[$to]
     }
-    $from.AutoConnect($to,0)
-
-    $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
+    $Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
+    if($update){
+      $connector=$p.Shapes | Where-Object {$_.Name -eq $name}
+    }
+    if (-not (get-variable Connector -Scope Local -ErrorAction Ignore)){
+        $from.AutoConnect($to,0)
+        $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
+        $connector.Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
+   }
     $connector.Text=$label
     $connector.CellsU('LineColor').Formula="rgb($($color.R),$($color.G),$($color.B))"
     $connector.CellsSRC(1,23,10) = 16
     $connector.CellsSRC(1,23,19) = 1 
 
     if($Arrow){
-         $connector.Cells('EndArrow').Formula = '=5'
+         $connector.Cells('EndArrow')=5
          if($bidirectional){ 
-            $connector.Cells(‘BeginArrow').Formula = '=5' 
+            $connector.Cells(‘BeginArrow')=5
+         } else {
+            
          }
+    } else {
+        $connector.Cells('EndArrow')=0
+        $connector.Cells('BeginArrow')=0
     }
 }
 
@@ -164,21 +194,33 @@ Function New-VisioContainer{
 [CmdletBinding()]
     Param( [string]$label,
         [Scriptblock]$contents,
-    $shape)
+    $shape,
+    [switch]$update)
     $page=Get-VisioPage
     if($contents){
         [array]$containedObjects=& $contents
         $firstShape=$containedObjects[0]
-        $droppedContainer=$page.DropContainer($shape,$firstShape)
+        if($update){
+           $droppedContainer=$page.Shapes | Where-Object {$_.Name -eq $label}
+        }
+        if(get-variable droppedContainer -Scope Local -ErrorAction Ignore){
+          If($droppedContainer.ContainerProperties.GetMemberShapes(16+2) -notcontains $firstShape.ID){
+            $droppedcontainer.ContainerProperties.AddMember($firstShape,2)
+          }
+        } else {
+            $droppedContainer=$page.DropContainer($shape,$firstShape)
+        } 
         $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
         $containedObjects | select-object -Skip 1 | % { 
-            $droppedcontainer.ContainerProperties.AddMember($_,1)
+            if(-not $update -or ($droppedContainer.ContainerProperties.GetMemberShapes(16+2) -notcontains $_.ID)){
+              $droppedcontainer.ContainerProperties.AddMember($_,1)
+            }
         }        
         $droppedContainer.ContainerProperties.FitToContents()
         $droppedContainer.Text=$label
         $droppedContainer.Name=$label
         $droppedContainer
-  
+
     }
     New-Variable -Name $label -Value $droppedContainer -Scope Global -Force
 
@@ -301,7 +343,7 @@ Function Complete-Diagram{
 [CmdletBinding()]
     Param([switch]$Close)
 
-    $Visio.ActiveDocument.Save()
+    $Visio.ActiveDocument.Save() 
     if($Close){
         $Visio.Quit()
     }
