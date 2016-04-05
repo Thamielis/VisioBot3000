@@ -165,6 +165,7 @@ Function New-VisioConnector{
     $from.AutoConnect($to,0)
 
     $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
+    $connector.Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
     $connector.Text=$label
     $connector.CellsU('LineColor').Formula="rgb($($color.R),$($color.G),$($color.B))"
     $connector.CellsSRC(1,23,10) = 16
