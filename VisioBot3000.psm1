@@ -154,7 +154,8 @@ Function New-VisioConnector{
           $Label,
           [System.Drawing.Color]$color,
           [switch]$Arrow,
-          [switch]$bidirectional)
+          [switch]$bidirectional,
+          [switch]$Update)
     $CurrentPage=Get-VisioPage
     if($from -is [string]){
         $from=$CurrentPage.Shapes[$from]
@@ -162,20 +163,30 @@ Function New-VisioConnector{
     if($to -is [string]){
         $to=$CurrentPage.Shapes[$to]
     }
-    $from.AutoConnect($to,0)
-
-    $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
-    $connector.Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
+    $Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
+    if($update){
+      $connector=$p.Shapes | Where-Object {$_.Name -eq $name}
+    }
+    if (-not (get-variable Connector -Scope Local -ErrorAction Ignore)){
+        $from.AutoConnect($to,0)
+        $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
+        $connector.Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
+   }
     $connector.Text=$label
     $connector.CellsU('LineColor').Formula="rgb($($color.R),$($color.G),$($color.B))"
     $connector.CellsSRC(1,23,10) = 16
     $connector.CellsSRC(1,23,19) = 1 
 
     if($Arrow){
-         $connector.Cells('EndArrow').Formula = '=5'
+         $connector.Cells('EndArrow')=5
          if($bidirectional){ 
-            $connector.Cells(‘BeginArrow').Formula = '=5' 
+            $connector.Cells(‘BeginArrow')=5
+         } else {
+            
          }
+    } else {
+        $connector.Cells('EndArrow')=0
+        $connector.Cells('BeginArrow')=0
     }
 }
 
