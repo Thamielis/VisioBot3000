@@ -17,12 +17,12 @@ Connector SQL -Color Red -arrow
 #this is the diagram
 Logical MyFarm {
     Location MyCity {
-        Domain MyDomain {
+        Domain MyDomain_A {
 		    WebServer PrimaryServer 5 5
 	    }
     }
     Location DRSite {
-        Domain MyDomain {
+        Domain MyDomain_B {
 		    WebServer BackupServer 5 8
 	    }
     }

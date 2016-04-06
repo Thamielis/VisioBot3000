@@ -14,13 +14,14 @@ Connector SQL -Color Green -arrow -bidirectional
 #this is the diagram
 Logical MyFarm {
     Location MyCity {
-        Domain MyDomain {
+        Domain MyDomain_A {
 		    WebServer PrimaryServer 50 50
+            WebServer SecondaryServer 7 3
 	    }
     }
 
     Location DRSite {
-        Domain MyDomain {
+        Domain MyDomain_B {
 		    WebServer BackupServer 50 80
 	    }
     }
@@ -28,4 +29,4 @@ Logical MyFarm {
 SQL -From PrimaryServer -To BackupServer
 Hyperlink $BackupServer -link http://google.com
 
-Complete-Diagram 
+#Complete-Diagram 
