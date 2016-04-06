@@ -25,6 +25,7 @@ Logical MyFarm {
     }
     Location DRSite {
         Domain MyDomain_B {
+            Set-RelativePositionDirection Vertical
 		    WebServer BackupServer 
             WebServer DRHotSpare
 	    }

@@ -6,7 +6,7 @@ $Shapes=@{}
 $Stencils=@{}
 $updateMode=$false 
 $LastDroppedObject=0
-
+$RelativeOrientation='Horizontal'
 Function New-VisioApplication{
 [CmdletBinding()]
     Param([switch]$Hide)
@@ -390,14 +390,28 @@ Param([string]$LayerName,$Contents,[switch]$Preserve)
 }
 
 Function Get-NextShapePosition{
+[CmdletBinding()]
+Param()
     if($LastDroppedObject -eq 0){
         #nothing dropped yet, start at top-left-ish
         return @{X=1;Y=10}
     } else {
-        $x=$LastDroppedObject.Cells('PinX').ResultIU + $LastDroppedObject.Cells('Width').ResultIU + 0.25
-        $y=$LastDroppedObject.Cells('PinY').ResultIU 
+        if($RelativeOrientation -eq 'Horizontal'){
+            $x=$LastDroppedObject.Cells('PinX').ResultIU + $LastDroppedObject.Cells('Width').ResultIU + 0.25
+            $y=$LastDroppedObject.Cells('PinY').ResultIU 
+        } else {
+            $x=$LastDroppedObject.Cells('PinX').ResultIU 
+            $y=$LastDroppedObject.Cells('PinY').ResultIU - $LastDroppedObject.Cells('Height').ResultIU - 0.25
+        }
         Return @{X=$x;Y=$y}
     }
+}
+
+Function Set-RelativePositionDirection{
+[CmdletBinding()]
+Param([ValidateSet('Horizontal','Vertical')]$Orientation)
+
+    $script:RelativeOrientation=$Orientation
 }
 
 #Aliases
