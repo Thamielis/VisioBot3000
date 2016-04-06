@@ -92,8 +92,9 @@ Function Set-VisioPage{
     $Visio=$script:Visio)
     $page=get-VisioPage $name
     $Visio.ActiveWindow.Page=$page 
-}
+} 
 
+[System.Reflection.Assembly]::LoadWithPartialName('System.Drawing') | out-null
 Function Get-VisioPage{
     [CmdletBinding()]
     Param($name)
@@ -250,7 +251,7 @@ Function Register-VisioBuiltinStencil{
     [String]$Name)
     $stencilID=@('Backgrounds','Borders','Containers','Callouts','Legends').IndexOf($BuiltInStencil)
     $stencilPath=$Visio.GetBuiltInStencilFile($stencilID,$vis.MSDefault)
-    Import-VisioStencil -Path $stencilPath -Name $Name 
+    Register-VisioStencil -Path $stencilPath -Name $Name 
 }
 Function Register-VisioStencil{
     [CmdletBinding()]
@@ -275,7 +276,7 @@ Function Register-VisioShape{
     [string]$masterName)
  
 
-    $newShape=$stencils[$StencilName].Masters | Where-Object Name -eq $masterName
+    $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $masterName}
     $script:Shapes[$name]=$newshape
     new-item -Path Function:\ -Name "global`:$name" -value {param($label, $x,$y) $shape=get-visioshape $name; New-VisioShape $shape $label $x $y}.GetNewClosure() -force  | out-null
 
@@ -287,7 +288,7 @@ Function Register-VisioContainer{
     [string]$masterName)
  
 
-    $newShape=$stencils[$StencilName].Masters | Where-Object Name -eq $masterName
+    $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $masterName}
     $script:Shapes[$name]=$newshape
     new-item -Path Function:\ -Name "global`:$name" -value {param($label,$contents) $shape=get-visioshape $name; New-VisioContainer  $label $contents $shape}.GetNewClosure() -force  | out-null
 
