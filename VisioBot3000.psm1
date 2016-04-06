@@ -327,15 +327,14 @@ Function Set-VisioShapeData{
     Param($Shape,
           $Name,
           $Value)
-    $shape.Cells("Prop.$Name").Formula="`"$value`""
+    $shape.Cells("Prop.$Name").Formula="=`"$value`""
 }
 
 Function Get-VisioShapeData{
 [CmdletBinding()]
     Param($Shape,
-          $Name,
-          $Value)
-    $shape.Cells("Prop.$Name").Formula="`"$value`""
+          $Name)
+    $shape.Cells("Prop.$Name").Formula.TrimStart('"').TrimEnd('"') 
 }
 
 Function Complete-Diagram{
