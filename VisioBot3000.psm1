@@ -5,6 +5,7 @@ $Visio=0
 $Shapes=@{}
 $Stencils=@{}
 $updateMode=$false 
+$LastDroppedObject=0
 
 Function New-VisioApplication{
 [CmdletBinding()]
@@ -121,7 +122,7 @@ Function Set-VisioPageLayout{
 
 Function New-VisioShape{
 [CmdletBinding()]
-    Param($master,$label,$x=0,$y=0)
+    Param($master,$label,$x,$y)
     if($master -is [string]){
         $master=$script:Shapes[$master]
     }
@@ -131,7 +132,13 @@ Function New-VisioShape{
       $DroppedShape=$p.Shapes | Where-Object {$_.Name -eq $label}
     }
     if(-not (get-variable DroppedShape -Scope Local -ErrorAction Ignore) -or $DroppedShape -eq $null){
+        if(-not $x){
+            $RelativePosition=Get-NextShapePosition
+            $x=$RelativePosition.X
+            $y=$RelativePosition.Y
+        }
         $DroppedShape=$p.Drop($master.PSObject.BaseObject,$x,$y)
+        $Script:LastDroppedObject=$DroppedShape
         $DroppedShape.Name=$label
     } else {
         write-verbose "Existing shape <$label> found"
@@ -202,12 +209,15 @@ Function New-VisioContainer{
         if($updatemode){
            $droppedContainer=$page.Shapes | Where-Object {$_.Name -eq $label}
         }
+        
         if(get-variable droppedContainer -Scope Local -ErrorAction Ignore){
           If($droppedContainer.ContainerProperties.GetMemberShapes(16+2) -notcontains $firstShape.ID){
             $droppedcontainer.ContainerProperties.AddMember($firstShape,2)
           }
         } else {
-            $droppedContainer=$page.DropContainer($shape,$firstShape)
+            $sel=New-VisioSelection $firstShape -Visible
+            $droppedContainer=$page.DropContainer($shape,$page.Application.ActiveWindow.Selection)
+            #$Script:LastDroppedObject=$DroppedShape
             $droppedContainer.Name=$label
         } 
         $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
@@ -371,7 +381,16 @@ Param([string]$LayerName,$Contents,[switch]$Preserve)
     }
 }
 
-
+Function Get-NextShapePosition{
+    if($LastDroppedObject -eq 0){
+        #nothing dropped yet, start at top-left-ish
+        return @{X=1;Y=10}
+    } else {
+        $x=$LastDroppedObject.Cells('PinX').ResultIU + $LastDroppedObject.Cells('Width').ResultIU + 0.25
+        $y=$LastDroppedObject.Cells('PinY').ResultIU 
+        Return @{X=$x;Y=$y}
+    }
+}
 
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument

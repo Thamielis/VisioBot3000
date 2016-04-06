@@ -18,12 +18,14 @@ Connector SQL -Color Red -arrow
 Logical MyFarm {
     Location MyCity {
         Domain MyDomain_A {
-		    WebServer PrimaryServer 5 5
-	    }
+		    WebServer PrimaryServer 
+            WebServer HotSpare
+
+   	    }
     }
     Location DRSite {
         Domain MyDomain_B {
-		    WebServer BackupServer 5 8
+		    WebServer BackupServer 
 	    }
     }
 }
