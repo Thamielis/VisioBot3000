@@ -3,7 +3,7 @@ stop-process -Name VISIO -ea SilentlyContinue
 remove-item c:\temp\testvisio3.vsdx -ea SilentlyContinue
 import-module VisioBot3000 -Force
 
-Diagram C:\temp\TestVisio3.vsdx 
+Diagram C:\temp\TestVisio3.vsdx  
 
 # Define shapes, containers, and connectors for the diagram
 Stencil Containers -From C:\temp\MyContainers.vssx 
@@ -26,6 +26,7 @@ Logical MyFarm {
     Location DRSite {
         Domain MyDomain_B {
 		    WebServer BackupServer 
+            WebServer DRHotSpare
 	    }
     }
 }

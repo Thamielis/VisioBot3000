@@ -46,7 +46,8 @@ Function New-VisioDocument{
     Param([string]$Path,
     [string]$From='',
     $Visio=$script:visio,
-    [switch]$Update)
+    [switch]$Update,
+    [switch]$landscape,[switch]$portrait)
     if(!$Visio){
         New-VisioApplication
         $Visio=$script:Visio
@@ -58,6 +59,13 @@ Function New-VisioDocument{
         Open-VisioDocument $path -Update
     } else {
         Open-VisioDocument $From
+
+    }
+    if($landscape){
+        $Visio.ActiveDocument.DiagramServicesEnabled=8
+        $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=2
+    } else {
+        $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=1
     }
     $Visio.ActiveDocument.SaveAs($path)
 }
@@ -114,9 +122,9 @@ Function Set-VisioPageLayout{
 [CmdletBinding()]
     Param([switch]$landscape,[switch]$portrait)
     if($landscape){
-        $Visio.ActiveDocument.PrintLandscape=(1)
+        $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=2
     } else {
-        $Visio.ActiveDocument.PrintLandscape=(0)
+        $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=1
     }
 }
 
@@ -217,7 +225,7 @@ Function New-VisioContainer{
         } else {
             $sel=New-VisioSelection $firstShape -Visible
             $droppedContainer=$page.DropContainer($shape,$page.Application.ActiveWindow.Selection)
-            #$Script:LastDroppedObject=$DroppedShape
+            $Script:LastDroppedObject=$droppedContainer
             $droppedContainer.Name=$label
         } 
         $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
