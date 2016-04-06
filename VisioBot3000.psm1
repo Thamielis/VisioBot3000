@@ -348,6 +348,32 @@ Function Complete-Diagram{
     }
 }
 
+Function New-VisioLayer{
+[CmdletBinding()]
+Param([string]$LayerName,$Contents,[switch]$Preserve)
+    if($Preserve){
+        $AddOption=1
+    } else {
+        $AddOption=0
+    }
+    $p=$Visio.ActivePage
+    $layer=$p.Layers | where {$_.Name -eq $LayerName}
+    if ($layer -eq $null){
+       $layer=$p.Layers.Add($LayerName) 
+    }
+    if ($contents -is [scriptblock]){
+        $Contents = & $contents
+    }
+    foreach($item in [array]$Contents){
+        if($item -is [string]){
+            $item=$p.Shapes[$item] 
+        }
+        $layer.Add($item,$AddOption)
+    }
+}
+
+
+
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
 New-Alias -Name Stencil -Value Register-VisioStencil
