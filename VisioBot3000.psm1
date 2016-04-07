@@ -1,4 +1,6 @@
 ﻿Set-StrictMode -Version Latest
+#Need System.Drawing for Colors.
+[System.Reflection.Assembly]::LoadWithPartialName('System.Drawing') | out-null
 
 #module level variables
 $Visio=0
@@ -7,6 +9,7 @@ $Stencils=@{}
 $updateMode=$false 
 $LastDroppedObject=0
 $RelativeOrientation='Horizontal'
+
 Function New-VisioApplication{
     [CmdletBinding()]
     Param([switch]$Hide)
@@ -94,7 +97,6 @@ Function Set-VisioPage{
     $Visio.ActiveWindow.Page=$page 
 } 
 
-[System.Reflection.Assembly]::LoadWithPartialName('System.Drawing') | out-null
 Function Get-VisioPage{
     [CmdletBinding()]
     Param($name)
@@ -131,9 +133,12 @@ Function Set-VisioPageLayout{
 
 Function New-VisioShape{
     [CmdletBinding()]
-    Param($master,$label,$x,$y)
+    Param($master,$label,$x,$y,$name)
     if($master -is [string]){
         $master=$script:Shapes[$master]
+    }
+    if(!$name){
+        $name=$label
     }
  
     $p=get-VisioPage
@@ -148,12 +153,12 @@ Function New-VisioShape{
         }
         $DroppedShape=$p.Drop($master.PSObject.BaseObject,$x,$y)
         $Script:LastDroppedObject=$DroppedShape
-        $DroppedShape.Name=$label
+        $DroppedShape.Name=$name
     } else {
         write-verbose "Existing shape <$label> found"
     }
     $DroppedShape.Text=$label
-    New-Variable -Name $label -Value $DroppedShape -Scope Global -Force
+    New-Variable -Name $name -Value $DroppedShape -Scope Global -Force
     write-output $DroppedShape
 }
 
@@ -168,10 +173,11 @@ Function New-VisioConnector{
     [CmdletBinding()]
     Param($from,
         $to,
-        $Label,
+        $name,
         [System.Drawing.Color]$color,
         [switch]$Arrow,
-    [switch]$bidirectional)
+    [switch]$bidirectional,
+    $label)
     $CurrentPage=Get-VisioPage
     if($from -is [string]){
         $from=$CurrentPage.Shapes[$from]
@@ -179,14 +185,16 @@ Function New-VisioConnector{
     if($to -is [string]){
         $to=$CurrentPage.Shapes[$to]
     }
-    $Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
+    if(!$name){
+        $Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
+    } 
     if($updatemode){
         $connector=$CurrentPage.Shapes | Where-Object {$_.Name -eq $name}
     }
     if (-not (get-variable Connector -Scope Local -ErrorAction Ignore)){
         $from.AutoConnect($to,0)
         $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
-        $connector.Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
+        $connector.Name=$name
     }
     $connector.Text=$label
     $connector.CellsU('LineColor').Formula="rgb($($color.R),$($color.G),$($color.B))"
@@ -208,9 +216,13 @@ Function New-VisioConnector{
 
 Function New-VisioContainer{
     [CmdletBinding()]
-    Param( [string]$label,
+    Param( [string]$name,
         [Scriptblock]$contents,
-    $shape)
+    $shape,
+    $label)
+    if(!$name){
+        $name=$label
+    }
     $page=Get-VisioPage
     if($contents){
         [array]$containedObjects=& $contents
@@ -227,7 +239,7 @@ Function New-VisioContainer{
             $sel=New-VisioSelection $firstShape -Visible
             $droppedContainer=$page.DropContainer($shape,$page.Application.ActiveWindow.Selection)
             $Script:LastDroppedObject=$droppedContainer
-            $droppedContainer.Name=$label
+            $droppedContainer.Name=$name
         } 
         $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
         $containedObjects | select-object -Skip 1 | % { 
@@ -240,7 +252,7 @@ Function New-VisioContainer{
         $droppedContainer
 
     }
-    New-Variable -Name $label -Value $droppedContainer -Scope Global -Force
+    New-Variable -Name $name -Value $droppedContainer -Scope Global -Force
 
 }
 
@@ -278,7 +290,8 @@ Function Register-VisioShape{
 
     $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $masterName}
     $script:Shapes[$name]=$newshape
-    new-item -Path Function:\ -Name "global`:$name" -value {param($label, $x,$y) $shape=get-visioshape $name; New-VisioShape $shape $label $x $y}.GetNewClosure() -force  | out-null
+    $outerName=$name 
+    new-item -Path Function:\ -Name "global`:$outername" -value {param($label, $x,$y, $name) $shape=get-visioshape $outername; New-VisioShape $shape $label $x $y -name $name}.GetNewClosure() -force  | out-null
 
 }
 Function Register-VisioContainer{
@@ -290,7 +303,8 @@ Function Register-VisioContainer{
 
     $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $masterName}
     $script:Shapes[$name]=$newshape
-    new-item -Path Function:\ -Name "global`:$name" -value {param($label,$contents) $shape=get-visioshape $name; New-VisioContainer  $label $contents $shape}.GetNewClosure() -force  | out-null
+    $outerName=$name
+    new-item -Path Function:\ -Name "global`:$outername" -value {param($label,$contents,$name) $shape=get-visioshape $outername; New-VisioContainer  $label $contents $shape $name}.GetNewClosure() -force  | out-null
 
 }
 Function Register-VisioConnector{
@@ -299,7 +313,7 @@ Function Register-VisioConnector{
         [System.Drawing.Color]$color,
         [switch]$Arrow,
     [switch]$bidirectional)
-    new-item -Path Function:\ -Name "global`:$name" -value {param($from,$to) New-VisioConnector $from $to $name $color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent}.GetNewClosure() -force  | out-null
+    new-item -Path Function:\ -Name "global`:$name" -value {param($from,$to,$label) New-VisioConnector $from $to $name $color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $label}.GetNewClosure() -force  | out-null
 }
 
 

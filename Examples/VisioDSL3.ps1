@@ -17,21 +17,21 @@ Connector SQL -Color Red -arrow
 #this is the diagram
 Logical MyFarm {
     Location MyCity {
-        Domain MyDomain_A {
+        Domain MyDomain  {
 		    WebServer PrimaryServer 
             WebServer HotSpare
 
    	    }
     }
     Location DRSite {
-        Domain MyDomain_B {
+        Domain MyDomain -name SiteB_MyDomain {
             Set-RelativePositionDirection Vertical
 		    WebServer BackupServer 
             WebServer DRHotSpare
 	    }
     }
 }
-SQL -From PrimaryServer -To BackupServer
+SQL -From PrimaryServer -To BackupServer 
 Hyperlink $BackupServer -link http://google.com
 
 Complete-Diagram 
