@@ -549,6 +549,7 @@ Function New-VisioConnector{
         [switch]$Arrow,
         [switch]$bidirectional,
     $label)
+    $colorFormula="rgb($($color.R),$($color.G),$($color.B))"
     if($PSCmdlet.ShouldProcess('Visio','Connect shapes with a connector')){
         $CurrentPage=Get-VisioPage
         foreach($dest in $to){
@@ -570,7 +571,7 @@ Function New-VisioConnector{
                     $connector.Name=$CalculatedName
                 }
                 $connector.Text=$label
-                $connector.CellsU('LineColor').Formula="rgb($($color.R),$($color.G),$($color.B))"
+                $connector.CellsU('LineColor').Formula=$colorFormula
                 $connector.CellsSRC(1,23,10) = 16
                 $connector.CellsSRC(1,23,19) = 1 
 
