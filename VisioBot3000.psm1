@@ -12,28 +12,28 @@ $RelativeOrientation='Horizontal'
 
 
 <#
-.SYNOPSIS 
-Starts the visio application (possibly hidden) and stores a reference to the application object
+        .SYNOPSIS 
+        Starts the visio application (possibly hidden) and stores a reference to the application object
 
-.DESCRIPTION
-Starts the visio application (possibly hidden) and stores a reference to the application object
+        .DESCRIPTION
+        Starts the visio application (possibly hidden) and stores a reference to the application object
 
-.PARAMETER Hide
-Starts Visio without showing the user interface
+        .PARAMETER Hide
+        Starts Visio without showing the user interface
 
-.INPUTS
-None. You cannot pipe objects to Add-Extension.
+        .INPUTS
+        None. You cannot pipe objects to Add-Extension.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-New-VisioApplication
---Visio Pops up--
+        .EXAMPLE
+        New-VisioApplication
+        --Visio Pops up--
 
-.EXAMPLE
-New-VisioApplication -Hide
---Nothing seems to happen
+        .EXAMPLE
+        New-VisioApplication -Hide
+        --Nothing seems to happen
 
 #>
 Function New-VisioApplication{
@@ -51,22 +51,22 @@ Function New-VisioApplication{
 
 
 <#
-.SYNOPSIS 
-Ouptuts a reference to the Visio application object
+        .SYNOPSIS 
+        Ouptuts a reference to the Visio application object
 
-.DESCRIPTION
-Ouptuts a reference to the Visio application object
+        .DESCRIPTION
+        Ouptuts a reference to the Visio application object
 
 
-.INPUTS
-None. You cannot pipe objects to Add-Extension.
+        .INPUTS
+        None. You cannot pipe objects to Add-Extension.
 
-.OUTPUTS
-Visio.Application
-Visio.InvisibleApp
+        .OUTPUTS
+        Visio.Application
+        Visio.InvisibleApp
 
-.EXAMPLE
-$app=Get-VisioApplication
+        .EXAMPLE
+        $app=Get-VisioApplication
 #>
 Function Get-VisioApplication{
     [CmdletBinding()]
@@ -79,38 +79,38 @@ Function Get-VisioApplication{
 
 
 <#
-.SYNOPSIS 
-Opens a visio document
+        .SYNOPSIS 
+        Opens a visio document
 
-.DESCRIPTION
-Opens an existing Visio document, a blank Visio Document 
+        .DESCRIPTION
+        Opens an existing Visio document, a blank Visio Document 
 
-.PARAMETER Path
-The path to an existing document, and empty string (to create a blank document) or the path to a Visio template (vstx, etc.)
+        .PARAMETER Path
+        The path to an existing document, and empty string (to create a blank document) or the path to a Visio template (vstx, etc.)
 
-.PARAMETER Visio
-Optional reference to a Visio Application (used if writing to multiple diagrams at the same time?)
+        .PARAMETER Visio
+        Optional reference to a Visio Application (used if writing to multiple diagrams at the same time?)
 
-.PARAMETER Update
-Switch indicating that we're updating a diagram, potentially created with VisioBot3000
+        .PARAMETER Update
+        Switch indicating that we're updating a diagram, potentially created with VisioBot3000
 
-.INPUTS
-None. You cannot pipe objects to Add-Extension.
+        .INPUTS
+        None. You cannot pipe objects to Add-Extension.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Open-VisioDocument 
---Creates a blank document--
+        .EXAMPLE
+        Open-VisioDocument 
+        --Creates a blank document--
 
-.EXAMPLE
-Open-VisioDocument .\MySampleVisio.vsdx
---Opens the named document
+        .EXAMPLE
+        Open-VisioDocument .\MySampleVisio.vsdx
+        --Opens the named document
 
-.EXAMPLE
-Open-VisioDocument .\MyVisioTemplate.vstx
---Creates a Visio template for editing (not a new document based on the template)
+        .EXAMPLE
+        Open-VisioDocument .\MyVisioTemplate.vstx
+        --Creates a Visio template for editing (not a new document based on the template)
 
 #>
 Function Open-VisioDocument{
@@ -131,41 +131,41 @@ Function Open-VisioDocument{
 
 
 <#
-.SYNOPSIS 
-Creates a new document
+        .SYNOPSIS 
+        Creates a new document
 
-.DESCRIPTION
-Creates a new document
+        .DESCRIPTION
+        Creates a new document
 
-.PARAMETER Path
-The path you want to save the document to 
+        .PARAMETER Path
+        The path you want to save the document to 
 
-.PARAMETER From
-The path to a template file to create the new document from 
+        .PARAMETER From
+        The path to a template file to create the new document from 
 
-.PARAMETER Visio
-Optional reference to a Visio Application (used if writing to multiple diagrams at the same time?)
+        .PARAMETER Visio
+        Optional reference to a Visio Application (used if writing to multiple diagrams at the same time?)
 
-.PARAMETER Update
-Switch indicating that we're updating a diagram, potentially created with VisioBot3000
+        .PARAMETER Update
+        Switch indicating that we're updating a diagram, potentially created with VisioBot3000
 
-.INPUTS
-None. You cannot pipe objects to Add-Extension.
+        .INPUTS
+        None. You cannot pipe objects to Add-Extension.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-New-VisioDocument 
---Creates a blank document--
+        .EXAMPLE
+        New-VisioDocument 
+        --Creates a blank document--
 
-.EXAMPLE
-New-VisioDocument .\MySampleVisio.vsdx
---Opens the named document
+        .EXAMPLE
+        New-VisioDocument .\MySampleVisio.vsdx
+        --Opens the named document
 
-.EXAMPLE
-New-VisioDocument .\MyVisioTemplate.vstx
---Creates a new document based on a Visio template  
+        .EXAMPLE
+        New-VisioDocument .\MyVisioTemplate.vstx
+        --Creates a new document based on a Visio template  
 
 #> 
 function New-VisioDocument{
@@ -200,23 +200,23 @@ function New-VisioDocument{
 }
 
 <#
-.SYNOPSIS 
-Outputs the active Visio document
+        .SYNOPSIS 
+        Outputs the active Visio document
 
-.DESCRIPTION
-Outputs the active Visio document
+        .DESCRIPTION
+        Outputs the active Visio document
 
-.PARAMETER Visio
-Optional reference to a Visio Application (used if writing to multiple diagrams at the same time?)
+        .PARAMETER Visio
+        Optional reference to a Visio Application (used if writing to multiple diagrams at the same time?)
 
-.INPUTS
-None. You cannot pipe objects to Get-VisioDocument.
+        .INPUTS
+        None. You cannot pipe objects to Get-VisioDocument.
 
-.OUTPUTS
-visio.Document
+        .OUTPUTS
+        visio.Document
 
-.EXAMPLE
-$doc=Get-VisioDocument
+        .EXAMPLE
+        $doc=Get-VisioDocument
 
 #>
 Function Get-VisioDocument{
@@ -241,26 +241,26 @@ Function New-VisioPage{
 }
 
 <#
-.SYNOPSIS 
-Change the active page in Visio
+        .SYNOPSIS 
+        Change the active page in Visio
 
-.DESCRIPTION
-Changes the active page in Visio to the page named in the parameter
+        .DESCRIPTION
+        Changes the active page in Visio to the page named in the parameter
 
-.PARAMETER Name
-Page name in the Visio document which you want to switch to
+        .PARAMETER Name
+        Page name in the Visio document which you want to switch to
 
-.PARAMETER Visio
-Optional reference to a Visio Application (used if writing to multiple diagrams at the same time?)
+        .PARAMETER Visio
+        Optional reference to a Visio Application (used if writing to multiple diagrams at the same time?)
 
-.INPUTS
-None. You cannot pipe objects to Set-VisioPage
+        .INPUTS
+        None. You cannot pipe objects to Set-VisioPage
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Set-VisioPage -Page 'Page-3'
+        .EXAMPLE
+        Set-VisioPage -Page 'Page-3'
 
 
 #>
@@ -275,28 +275,28 @@ function Set-VisioPage{
 } 
 
 <#
-.SYNOPSIS 
-Returns a visio page
+        .SYNOPSIS 
+        Returns a visio page
 
-.DESCRIPTION
-Returns either the named page or the active page if nothing was named.
+        .DESCRIPTION
+        Returns either the named page or the active page if nothing was named.
 
-.PARAMETER Name
-The name of the page you want.  If you don't supply a name, the active page will be output.
+        .PARAMETER Name
+        The name of the page you want.  If you don't supply a name, the active page will be output.
 
-.INPUTS
-None. You cannot pipe objects to Get-VisioPage.
+        .INPUTS
+        None. You cannot pipe objects to Get-VisioPage.
 
-.OUTPUTS
-Visio.Page
+        .OUTPUTS
+        Visio.Page
 
-.EXAMPLE
-$activePage=get-VisioPage
-#Returns the active page
+        .EXAMPLE
+        $activePage=get-VisioPage
+        #Returns the active page
 
-.EXAMPLE
-get-VisioPage 'Page-3'
-#returns the page named 'Page-3'
+        .EXAMPLE
+        get-VisioPage 'Page-3'
+        #returns the page named 'Page-3'
 
 
 #>
@@ -316,32 +316,32 @@ Function Get-VisioPage{
 
 
 <#
-.SYNOPSIS 
-Deletes a page from Visio
+        .SYNOPSIS 
+        Deletes a page from Visio
 
-.DESCRIPTION
-Deletes a named page or the active page if no page is named.
+        .DESCRIPTION
+        Deletes a named page or the active page if no page is named.
 
-.PARAMETER Name
-The name of the page to remove.  If no page is named, the active page is removed.
+        .PARAMETER Name
+        The name of the page to remove.  If no page is named, the active page is removed.
 
-.PARAMETER Parameter2
-Describe Parameter1
+        .PARAMETER Parameter2
+        Describe Parameter1
 
-.INPUTS
-What can be piped in
-None. You cannot pipe objects to Remove-VisioPage
+        .INPUTS
+        What can be piped in
+        None. You cannot pipe objects to Remove-VisioPage
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Remove-VisioPage 'Page-3'
-#removes page 3
+        .EXAMPLE
+        Remove-VisioPage 'Page-3'
+        #removes page 3
 
-.EXAMPLE
-Remove-VisioPage
-#removes the active page
+        .EXAMPLE
+        Remove-VisioPage
+        #removes the active page
 
 #>
 Function Remove-VisioPage{
@@ -359,29 +359,29 @@ Function Remove-VisioPage{
 
 
 <#
-.SYNOPSIS 
-Switches the page orientation
+        .SYNOPSIS 
+        Switches the page orientation
 
-.DESCRIPTION
-Set the page orientation to either Landscape or Portrait
+        .DESCRIPTION
+        Set the page orientation to either Landscape or Portrait
 
-.PARAMETER Landscape
-Changes the page orientation to Landscape
+        .PARAMETER Landscape
+        Changes the page orientation to Landscape
 
-.PARAMETER Portrait
-Changes the page orientation to Portrait
+        .PARAMETER Portrait
+        Changes the page orientation to Portrait
 
-.INPUTS
-None. You cannot pipe objects to Set-VisioPageLayout
+        .INPUTS
+        None. You cannot pipe objects to Set-VisioPageLayout
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Set-VisioPageLayout -Portrait
+        .EXAMPLE
+        Set-VisioPageLayout -Portrait
 
-.EXAMPLE
-Set-VisioPageLayout -Landscape
+        .EXAMPLE
+        Set-VisioPageLayout -Landscape
 
 #>
 Function Set-VisioPageLayout{
@@ -397,33 +397,33 @@ Function Set-VisioPageLayout{
 }
 
 <#
-.SYNOPSIS 
-Drops a shape on the page
+        .SYNOPSIS 
+        Drops a shape on the page
 
-.DESCRIPTION
-Drops a shape (provided as a master shape) on the page.  If no X coordinate is given, the shape is positioned relative to the previous shape placed
-The shape is given a name and label.
+        .DESCRIPTION
+        Drops a shape (provided as a master shape) on the page.  If no X coordinate is given, the shape is positioned relative to the previous shape placed
+        The shape is given a name and label.
 
-.PARAMETER Master
-Either the name of the master (previously registered using Register-VisioShape) or a reference to a master object.
+        .PARAMETER Master
+        Either the name of the master (previously registered using Register-VisioShape) or a reference to a master object.
 
-.PARAMETER X
-The X position used to place the shape (in inches). If this is omitted, the shape is positioned relative to the previous shape placed.
+        .PARAMETER X
+        The X position used to place the shape (in inches). If this is omitted, the shape is positioned relative to the previous shape placed.
 
-.PARAMETER Y
-The Y position used to place the shape (in inches). 
+        .PARAMETER Y
+        The Y position used to place the shape (in inches). 
 
-.PARAMETER Name
-The name for the new shape.
+        .PARAMETER Name
+        The name for the new shape.
 
-.INPUTS
-None. You cannot pipe objects to Add-Extension.
+        .INPUTS
+        None. You cannot pipe objects to Add-Extension.
 
-.OUTPUTS
-Visio.Shape
+        .OUTPUTS
+        Visio.Shape
 
-.EXAMPLE
-New-VisioShape MasterShapeName -Label 'My Shape' -x 5 -y 5 -Name MyShape
+        .EXAMPLE
+        New-VisioShape MasterShapeName -Label 'My Shape' -x 5 -y 5 -Name MyShape
 
 
 #>
@@ -461,33 +461,33 @@ Function New-VisioShape{
 }
 
 <#
-.SYNOPSIS 
-Draw a rectangle
+        .SYNOPSIS 
+        Draw a rectangle
 
-.DESCRIPTION
-Draws a rectangle on the active page with the position/size specified in the parameters
+        .DESCRIPTION
+        Draws a rectangle on the active page with the position/size specified in the parameters
 
-.PARAMETER X0
-Describe The Left edge of the rectangle (in inches)
+        .PARAMETER X0
+        Describe The Left edge of the rectangle (in inches)
 
-.PARAMETER Y0
-Describe The Top edge of the rectangle (in inches)
+        .PARAMETER Y0
+        Describe The Top edge of the rectangle (in inches)
 
-.PARAMETER X1
-Describe The Right edge of the rectangle (in inches)
+        .PARAMETER X1
+        Describe The Right edge of the rectangle (in inches)
 
-.PARAMETER Y1
-Describe The Bottom edge of the rectangle (in inches)
+        .PARAMETER Y1
+        Describe The Bottom edge of the rectangle (in inches)
 
-.INPUTS
-None. You cannot pipe objects to New-VisioRectangle.
+        .INPUTS
+        None. You cannot pipe objects to New-VisioRectangle.
 
-.OUTPUTS
-Visio.Shape
+        .OUTPUTS
+        Visio.Shape
 
-.EXAMPLE
-$rect = New-VisioRectangle 1 5 2 6
-#draws a rectangle
+        .EXAMPLE
+        $rect = New-VisioRectangle 1 5 2 6
+        #draws a rectangle
 
 #>
 Function New-VisioRectangle{
@@ -500,122 +500,128 @@ Function New-VisioRectangle{
 }
 
 <#
-.SYNOPSIS 
-Connects two shapes
+        .SYNOPSIS 
+        Connects two shapes
 
-.DESCRIPTION
-Creates a connector object between two previously drawn shapes.
+        .DESCRIPTION
+        Creates a connector object between two previously drawn shapes.
 
-.PARAMETER From
-The shape that the connector will originate from
+        .PARAMETER From
+        The shape that the connector will originate from
 
-.PARAMETER To
-The shape that the connector will end on
+        .PARAMETER To
+        The shape that the connector will end on
 
-.PARAMETER Name
-The name to assign to the connector shape
+        .PARAMETER Name
+        The name to assign to the connector shape
 
-.PARAMETER Color
-The color to draw the connector
+        .PARAMETER Color
+        The color to draw the connector
 
-.PARAMETER Arrow
-Determines whether an arrow is drawn on the connector at the final end
+        .PARAMETER Arrow
+        Determines whether an arrow is drawn on the connector at the final end
 
-.PARAMETER Bidirectional
-Determines whether an arrow is drawn on the connector at the originating end
+        .PARAMETER Bidirectional
+        Determines whether an arrow is drawn on the connector at the originating end
 
-.PARAMETER Label
-The text to be shown on the arrow
+        .PARAMETER Label
+        The text to be shown on the arrow
 
 
-.INPUTS
-None. You cannot pipe objects to New-VisioConnector.
+        .INPUTS
+        None. You cannot pipe objects to New-VisioConnector.
 
-.OUTPUTS
-Visio.Shape
+        .OUTPUTS
+        Visio.Shape
 
-.EXAMPLE
-$arrow = New-VisioConnector -From WebServer -To SQLServer -name SQLConnection -Arrow -color Red -label SQL
-File.txt
+        .EXAMPLE
+        $arrow = New-VisioConnector -From WebServer -To SQLServer -name SQLConnection -Arrow -color Red -label SQL
+        File.txt
 
 
 #>
 Function New-VisioConnector{
     [CmdletBinding(SupportsShouldProcess=$true)]
-    Param($from,
+    Param([array]$from,
         $to,
         $name,
         [System.Drawing.Color]$color,
         [switch]$Arrow,
         [switch]$bidirectional,
     $label)
+    $colorFormula="rgb($($color.R),$($color.G),$($color.B))"
     if($PSCmdlet.ShouldProcess('Visio','Connect shapes with a connector')){
         $CurrentPage=Get-VisioPage
-        if($from -is [string]){
-            $from=$CurrentPage.Shapes[$from]
-        }
-        if($to -is [string]){
-            $to=$CurrentPage.Shapes[$to]
-        }
-        if(!$name){
-            $Name='{0}_{1}_{2}' -f $label,$from.Name,$to.Name
-        } 
-        if($updatemode){
-            $connector=$CurrentPage.Shapes | Where-Object {$_.Name -eq $name}
-        }
-        if (-not (get-variable Connector -Scope Local -ErrorAction Ignore)){
-            $from.AutoConnect($to,0)
-            $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
-            $connector.Name=$name
-        }
-        $connector.Text=$label
-        $connector.CellsU('LineColor').Formula="rgb($($color.R),$($color.G),$($color.B))"
-        $connector.CellsSRC(1,23,10) = 16
-        $connector.CellsSRC(1,23,19) = 1 
+        foreach($dest in $to){
+            foreach($source in $from){
+                if($source -is [string]){
+                    $source=$CurrentPage.Shapes[$source]
+                }
+                if($dest -is [string]){
+                    $dest=$CurrentPage.Shapes[$dest]
+                }
 
-        if($Arrow){
-            $connector.Cells('EndArrow')=5
-            if($bidirectional){ 
-                $connector.Cells(‘BeginArrow')=5
-            } else {
+                $CalculatedName='{0}_{1}_{2}' -f $label,$source.Name,$dest.Name
+                if($updatemode){
+                    $connector=$CurrentPage.Shapes | Where-Object {$_.Name -eq $CalculatedName}
+                }
+                if (-not (get-variable Connector -Scope Local -ErrorAction Ignore)){
+                    $source.AutoConnect($dest,0)
+                    $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
+                    $connector.Name=$CalculatedName
+                }
+                $connector.Text=$label
+                $connector.CellsU('LineColor').Formula=$colorFormula
+                $connector.CellsSRC(1,23,10) = 16
+                $connector.CellsSRC(1,23,19) = 1 
+
+                if($Arrow){
+                    $connector.Cells('EndArrow')=5
+                    if($bidirectional){ 
+                        $connector.Cells(‘BeginArrow')=5
+                    } else {
             
+                    }
+                } else {
+                    $connector.Cells('EndArrow')=0
+                    $connector.Cells('BeginArrow')=0
+                }
+                Remove-variable Connector
             }
-        } else {
-            $connector.Cells('EndArrow')=0
-            $connector.Cells('BeginArrow')=0
         }
     }
+
 }
 
 <#
-.SYNOPSIS 
-Draws a container
+        .SYNOPSIS 
+        Draws a container
 
-.DESCRIPTION
-Draws a container around previously drawn shapes on the active page.
+        .DESCRIPTION
+        Draws a container around previously drawn shapes on the active page.
 
-.PARAMETER Name
-The name to assign to the dropped shape
+        .PARAMETER Name
+        The name to assign to the dropped shape
 
-.PARAMETER Conents
-A scriptblock which, when executed, outputs the objects to be contained in the container
+        .PARAMETER Conents
+        A scriptblock which, when executed, outputs the objects to be contained in the container
 
-.PARAMETER Shape
-The master shape to use to draw the container
+        .PARAMETER Shape
+        The master shape to use to draw the container
 
-.PARAMETER Label
-The text to label the container with
+        .PARAMETER Label
+        The text to label the container with
 
-.INPUTS
-None. You cannot pipe objects to New-VisioContainer.
+        .INPUTS
+        None. You cannot pipe objects to New-VisioContainer.
 
-.OUTPUTS
-Visio.Shape
+        .OUTPUTS
+        Visio.Shape
 
-.EXAMPLE
- New-VisioContainer -shape (Get-VisioShape Domain) -label MyDomain -contents {
-		    New-VisioShape -master WebServer -label BackupServer -x 5 -y 8
-	    }
+        .EXAMPLE
+        New-VisioContainer -shape (Get-VisioShape Domain) -label MyDomain -contents {
+            New-VisioShape -master WebServer -label BackupServer -x 5 -y 8
+        }
 
 #>
 Function New-VisioContainer{
@@ -662,26 +668,26 @@ Function New-VisioContainer{
 }
 
 <#
-.SYNOPSIS 
-Loads a built-in stencil  
+        .SYNOPSIS 
+        Loads a built-in stencil  
 
-.DESCRIPTION
-Loads a built-in stencil  
+        .DESCRIPTION
+        Loads a built-in stencil  
 
-.PARAMETER BuiltinStencil
-Which built-in stencil to load
+        .PARAMETER BuiltinStencil
+        Which built-in stencil to load
 
-.PARAMETER Name
-What name to use to reference the stencil
+        .PARAMETER Name
+        What name to use to reference the stencil
 
-.INPUTS
-None. You cannot pipe objects to Register-VisioBuiltinStencil
+        .INPUTS
+        None. You cannot pipe objects to Register-VisioBuiltinStencil
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Register-VisioBuiltinStencil -BuiltInStencil Containers -Name VisioContainers
+        .EXAMPLE
+        Register-VisioBuiltinStencil -BuiltInStencil Containers -Name VisioContainers
 #>
 Function Register-VisioBuiltinStencil{
     [CmdletBinding()]
@@ -693,32 +699,32 @@ Function Register-VisioBuiltinStencil{
     Register-VisioStencil -Path $stencilPath -Name $Name 
 }
 <#
-.SYNOPSIS 
-Loads a stencil and gives it a name
+        .SYNOPSIS 
+        Loads a stencil and gives it a name
 
-.DESCRIPTION
-Loads a stencil and gives it a name
+        .DESCRIPTION
+        Loads a stencil and gives it a name
 
-.PARAMETER Name
-The name to use to refer to the stencil
+        .PARAMETER Name
+        The name to use to refer to the stencil
 
-.PARAMETER Path
-The path to the stencil file.  Ignored with -Builtin
+        .PARAMETER Path
+        The path to the stencil file.  Ignored with -Builtin
 
-.PARAMETER BuiltIn
-Flags that Path (or Name) refer to a built-in stencil.
+        .PARAMETER BuiltIn
+        Flags that Path (or Name) refer to a built-in stencil.
 
-.INPUTS
-None. You cannot pipe objects to Register-VisioStencil.
+        .INPUTS
+        None. You cannot pipe objects to Register-VisioStencil.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Register-VisioStencil -Name Containers -Path 'c:\temp\my containers.vssx'
+        .EXAMPLE
+        Register-VisioStencil -Name Containers -Path 'c:\temp\my containers.vssx'
 
-.EXAMPLE
-Register-VisioStencil -Name Connectors -Builtin
+        .EXAMPLE
+        Register-VisioStencil -Name Connectors -Builtin
 
 #>
 Function Register-VisioStencil{
@@ -738,29 +744,29 @@ Function Register-VisioStencil{
 }
 
 <#
-.SYNOPSIS 
-Copies a master from a stencil and gives it a name.
+        .SYNOPSIS 
+        Copies a master from a stencil and gives it a name.
 
-.DESCRIPTION
-Copies a master from a stencil and gives it a name.  Also creates a function with the same name to drop the shape onto the active Visio page.
+        .DESCRIPTION
+        Copies a master from a stencil and gives it a name.  Also creates a function with the same name to drop the shape onto the active Visio page.
 
-.PARAMETER Name
-The name used to refer to the shape
+        .PARAMETER Name
+        The name used to refer to the shape
 
-.PARAMETER StencilName
-Which stencil to get the master from
+        .PARAMETER StencilName
+        Which stencil to get the master from
 
-.PARAMETER MasterName
-The name of the master in the stencil
+        .PARAMETER MasterName
+        The name of the master in the stencil
 
-.INPUTS
-None. You cannot pipe objects to Register-VisioShape.
+        .INPUTS
+        None. You cannot pipe objects to Register-VisioShape.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Register-VisioShape -Name Block -StencilName BasicShapes -MasterName Block
+        .EXAMPLE
+        Register-VisioShape -Name Block -StencilName BasicShapes -MasterName Block
 
 #>
 Function Register-VisioShape{
@@ -777,28 +783,28 @@ Function Register-VisioShape{
 
 }
 <#
-Copies a master for a container from a stencil and gives it a name.
+        Copies a master for a container from a stencil and gives it a name.
 
-.DESCRIPTION
-Copies a master for a container from a stencil and gives it a name.  Also creates a function with the same name to drop the container (with contents) onto the active Visio page.
+        .DESCRIPTION
+        Copies a master for a container from a stencil and gives it a name.  Also creates a function with the same name to drop the container (with contents) onto the active Visio page.
 
-.PARAMETER Name
-The name used to refer to the shape
+        .PARAMETER Name
+        The name used to refer to the shape
 
-.PARAMETER StencilName
-Which stencil to get the master from
+        .PARAMETER StencilName
+        Which stencil to get the master from
 
-.PARAMETER MasterName
-The name of the master in the stencil
+        .PARAMETER MasterName
+        The name of the master in the stencil
 
-.INPUTS
-None. You cannot pipe objects to Register-VisioContainer.
+        .INPUTS
+        None. You cannot pipe objects to Register-VisioContainer.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Register-VisioContainer -Name BasicContainer -StencilName Containers -MasterName Plain
+        .EXAMPLE
+        Register-VisioContainer -Name BasicContainer -StencilName Containers -MasterName Plain
 
 #>
 Function Register-VisioContainer{
@@ -815,33 +821,33 @@ Function Register-VisioContainer{
 
 }
 <#
-.SYNOPSIS 
-Saves a "nickname" for a certain style of connector
+        .SYNOPSIS 
+        Saves a "nickname" for a certain style of connector
 
-.DESCRIPTION
-Saves a "nickname" for a certain style of connector
+        .DESCRIPTION
+        Saves a "nickname" for a certain style of connector
 
-.PARAMETER Name
-The name to use to refer to this style of connector
+        .PARAMETER Name
+        The name to use to refer to this style of connector
 
-.PARAMETER Color
-The color to draw the connector in
+        .PARAMETER Color
+        The color to draw the connector in
 
-.PARAMETER Arrow
-Whether to put an arrow at the end of the connector
+        .PARAMETER Arrow
+        Whether to put an arrow at the end of the connector
 
-.PARAMETER Bidirectional
-Whether to put an arrow at the beginning of the connector
+        .PARAMETER Bidirectional
+        Whether to put an arrow at the beginning of the connector
 
 
-.INPUTS
-None. You cannot pipe objects to Register-VisioConnector.
+        .INPUTS
+        None. You cannot pipe objects to Register-VisioConnector.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Register-VisioConnector -Name HTTP -Color Black -Ar
+        .EXAMPLE
+        Register-VisioConnector -Name HTTP -Color Black -Ar
 #>
 Function Register-VisioConnector{
     [CmdletBinding()]
@@ -854,23 +860,23 @@ Function Register-VisioConnector{
 
 
 <#
-.SYNOPSIS 
-Retrieves a saved shape definition
+        .SYNOPSIS 
+        Retrieves a saved shape definition
 
-.DESCRIPTION
-Retrieves a saved shape definition
+        .DESCRIPTION
+        Retrieves a saved shape definition
 
-.PARAMETER Name
-Describe Parameter1
+        .PARAMETER Name
+        Describe Parameter1
 
-.INPUTS
-None. You cannot pipe objects to Get-VisioShape
+        .INPUTS
+        None. You cannot pipe objects to Get-VisioShape
 
-.OUTPUTS
-Visio.Shape
+        .OUTPUTS
+        Visio.Shape
 
-.EXAMPLE
-Get-VisioShape Block
+        .EXAMPLE
+        Get-VisioShape Block
 
 #>
 Function Get-VisioShape{
@@ -880,27 +886,27 @@ Function Get-VisioShape{
 }
 
 <#
-.SYNOPSIS 
-Sets the hyperlink on a shape to the given address.
+        .SYNOPSIS 
+        Sets the hyperlink on a shape to the given address.
 
-.DESCRIPTION
-Sets the hyperlink on a shape to the given address.
+        .DESCRIPTION
+        Sets the hyperlink on a shape to the given address.
 
-.PARAMETER Shape
-The shape you want the hyperlink on
+        .PARAMETER Shape
+        The shape you want the hyperlink on
 
-.PARAMETER Link
-The address of the hyperlink
+        .PARAMETER Link
+        The address of the hyperlink
 
-.INPUTS
-None. You cannot pipe objects to New-VisioHyperlink.
+        .INPUTS
+        None. You cannot pipe objects to New-VisioHyperlink.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-New-VisioHyperlink -shape $rectangle -link http://google.com
-File.txt
+        .EXAMPLE
+        New-VisioHyperlink -shape $rectangle -link http://google.com
+        File.txt
 
 #>
 Function New-VisioHyperlink{
@@ -918,27 +924,27 @@ Function New-VisioHyperlink{
 }
 
 <#
-.SYNOPSIS 
-Creates a selection object using the given shapes.
+        .SYNOPSIS 
+        Creates a selection object using the given shapes.
 
-.DESCRIPTION
-Creates a selection object using the given shapes.  If -Visible is passed, the selection is shown in the application.
+        .DESCRIPTION
+        Creates a selection object using the given shapes.  If -Visible is passed, the selection is shown in the application.
 
-.PARAMETER Objects
-The objects to be selected
+        .PARAMETER Objects
+        The objects to be selected
 
-.PARAMETER Visible
-Whether the selection is visible in the application
+        .PARAMETER Visible
+        Whether the selection is visible in the application
 
-.INPUTS
-What can be piped in
-None. You cannot pipe objects to New-VisioSelection.
+        .INPUTS
+        What can be piped in
+        None. You cannot pipe objects to New-VisioSelection.
 
-.OUTPUTS
-Visio.Selection
+        .OUTPUTS
+        Visio.Selection
 
-.EXAMPLE
-New-VisioSelection -Objects Server1,Server2
+        .EXAMPLE
+        New-VisioSelection -Objects Server1,Server2
 #>
 Function New-VisioSelection{
     [CmdletBinding(SupportsShouldProcess=$true)]
@@ -963,29 +969,29 @@ Function New-VisioSelection{
 
 
 <#
-.SYNOPSIS 
-Sets the value of a shape data field.
+        .SYNOPSIS 
+        Sets the value of a shape data field.
 
-.DESCRIPTION
-Sets the value of a shape data field.
+        .DESCRIPTION
+        Sets the value of a shape data field.
 
-.PARAMETER Shape
-The shape that has the shape data
+        .PARAMETER Shape
+        The shape that has the shape data
 
-.PARAMETER Name
-The name of the shape data field to set
+        .PARAMETER Name
+        The name of the shape data field to set
 
-.PARAMETER Value
-The value to set the shape data to
+        .PARAMETER Value
+        The value to set the shape data to
 
-.INPUTS
-None. You cannot pipe objects to Set-VisioShapeData.
+        .INPUTS
+        None. You cannot pipe objects to Set-VisioShapeData.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Set-VisioShapeData -shape $WebServer -Name IPAddress -Value 10.1.1.5
+        .EXAMPLE
+        Set-VisioShapeData -shape $WebServer -Name IPAddress -Value 10.1.1.5
 #>
 Function Set-VisioShapeData{
     [CmdletBinding(SupportsShouldProcess=$true)]
@@ -998,26 +1004,26 @@ Function Set-VisioShapeData{
 }
 
 <#
-.SYNOPSIS 
-Returns a shape data field from a shape
+        .SYNOPSIS 
+        Returns a shape data field from a shape
 
-.DESCRIPTION
-Returns a shape data field from a shape
+        .DESCRIPTION
+        Returns a shape data field from a shape
 
-.PARAMETER Shape
-The shape that has the shape data
+        .PARAMETER Shape
+        The shape that has the shape data
 
-.PARAMETER Name
-Which shape data field you want the value from
+        .PARAMETER Name
+        Which shape data field you want the value from
 
-.INPUTS
-None. You cannot pipe objects to Get-VisioShapeData.
+        .INPUTS
+        None. You cannot pipe objects to Get-VisioShapeData.
 
-.OUTPUTS
-String
+        .OUTPUTS
+        String
 
-.EXAMPLE
-Get-VisioShapeData -shape $webServer -Name IPAddress
+        .EXAMPLE
+        Get-VisioShapeData -shape $webServer -Name IPAddress
 #>
 Function Get-VisioShapeData{
     [CmdletBinding()]
@@ -1029,23 +1035,23 @@ Function Get-VisioShapeData{
 }
 
 <#
-.SYNOPSIS 
-Saves the diagram and optionally exits Visio
+        .SYNOPSIS 
+        Saves the diagram and optionally exits Visio
 
-.DESCRIPTION
-Saves the diagram and optionally exits Visio
+        .DESCRIPTION
+        Saves the diagram and optionally exits Visio
 
-.PARAMETER Close
-Whether to exit Visio or not
+        .PARAMETER Close
+        Whether to exit Visio or not
 
-.INPUTS
-None. You cannot pipe objects to Complete-Diagram.
+        .INPUTS
+        None. You cannot pipe objects to Complete-Diagram.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
-Complete-Diagram
+        .EXAMPLE
+        Complete-Diagram
 #>
 Function Complete-Diagram{
     [CmdletBinding()]
@@ -1058,29 +1064,29 @@ Function Complete-Diagram{
 }
 
 <#
-.SYNOPSIS 
-Creates a new Visio Layer and adds the given objects to it.
+        .SYNOPSIS 
+        Creates a new Visio Layer and adds the given objects to it.
 
-.DESCRIPTION
-Long DescriptionCreates a new Visio Layer and adds the given objects to it.
+        .DESCRIPTION
+        Long DescriptionCreates a new Visio Layer and adds the given objects to it.
 
-.PARAMETER LayerName
-The name for the new layer
+        .PARAMETER LayerName
+        The name for the new layer
 
-.PARAMETER Contents
-The objects to be included in the layer
+        .PARAMETER Contents
+        The objects to be included in the layer
 
-.PARAMETER Preserve
-Whether to preserve the existing layer assignments for these objecfts.
+        .PARAMETER Preserve
+        Whether to preserve the existing layer assignments for these objecfts.
 
-.INPUTS
-None. You cannot pipe objects to New-VisioLayer.
+        .INPUTS
+        None. You cannot pipe objects to New-VisioLayer.
 
-.OUTPUTS
-Visio.Layer
+        .OUTPUTS
+        Visio.Layer
 
-.EXAMPLE
-New-VisioLayer -Layer WebServers -Contents WebServer1,WebServer2 -Preserve
+        .EXAMPLE
+        New-VisioLayer -Layer WebServers -Contents WebServer1,WebServer2 -Preserve
 #>
 Function New-VisioLayer{
     [CmdletBinding(SupportsShouldProcess=$true)]
@@ -1109,21 +1115,21 @@ Function New-VisioLayer{
 }
 
 <#
-.SYNOPSIS 
-Returns the next position to place a shape using relative positioning
+        .SYNOPSIS 
+        Returns the next position to place a shape using relative positioning
 
-.DESCRIPTION
-Returns the next position to place a shape using relative positioning
+        .DESCRIPTION
+        Returns the next position to place a shape using relative positioning
 
-.INPUTS
-None. You cannot pipe objects to Get-NextShapePosition.
+        .INPUTS
+        None. You cannot pipe objects to Get-NextShapePosition.
 
-.OUTPUTS
-HashTable
+        .OUTPUTS
+        HashTable
 
-.EXAMPLE
-Get-NextShapePosition
-#returns a hashtable with X and Y position of next shape to place.
+        .EXAMPLE
+        Get-NextShapePosition
+        #returns a hashtable with X and Y position of next shape to place.
 
 #>
 
@@ -1146,24 +1152,24 @@ Function Get-NextShapePosition{
 }
 
 <#
-.SYNOPSIS 
-Changes the direction VisioBot3000 uses when placing shapes using relative positioning
+        .SYNOPSIS 
+        Changes the direction VisioBot3000 uses when placing shapes using relative positioning
 
-.DESCRIPTION
-Changes the direction VisioBot3000 uses when placing shapes using relative positioning
+        .DESCRIPTION
+        Changes the direction VisioBot3000 uses when placing shapes using relative positioning
 
-.PARAMETER Orientation
-Either vertical or Horizontal
+        .PARAMETER Orientation
+        Either vertical or Horizontal
 
-.INPUTS
-None. You cannot pipe objects to Set-RelativePositionDirection.
+        .INPUTS
+        None. You cannot pipe objects to Set-RelativePositionDirection.
 
-.OUTPUTS
-None
+        .OUTPUTS
+        None
 
-.EXAMPLE
- Set-RelativePositionDirection Horizontal
-File.txt
+        .EXAMPLE
+        Set-RelativePositionDirection Horizontal
+        File.txt
 
 #>
 Function Set-RelativePositionDirection{
