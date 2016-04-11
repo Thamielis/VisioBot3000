@@ -18,7 +18,7 @@ Connector SQL -Color Red -arrow
 Logical MyFarm {
     Location MyCity {
         Domain MyDomain  {
-		    WebServer PrimaryServer 
+		    WebServer -name PrimaryServer -label "PrimaryServer`r`n10.1.1.5"
             WebServer HotSpare
 
    	    }

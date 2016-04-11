@@ -15,14 +15,14 @@ Connector SQL -Color Green -arrow -bidirectional
 Logical MyFarm {
     Location MyCity {
         Domain MyDomain_A {
-		    WebServer PrimaryServer 50 50
-            WebServer SecondaryServer 7 3
+		    WebServer PrimaryServer  
+            WebServer SecondaryServer 
 	    }
     }
 
     Location DRSite {
         Domain MyDomain_B {
-		    WebServer BackupServer 50 80
+		    WebServer BackupServer  
 	    }
     }
 }
