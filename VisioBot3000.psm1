@@ -1139,7 +1139,9 @@ Function Get-NextShapePosition{
     Param()
     if($LastDroppedObject -eq 0){
         #nothing dropped yet, start at top-left-ish
-        return @{X=1;Y=10}
+        $p=Get-VisioPage
+        
+        return @{X=1;Y=$p.Pagesheet.Cells('PAgeHeight').ResultIU-1}
     } else {
         if($RelativeOrientation -eq 'Horizontal'){
             $x=$LastDroppedObject.Cells('PinX').ResultIU + $LastDroppedObject.Cells('Width').ResultIU + 0.25
