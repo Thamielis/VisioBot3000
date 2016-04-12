@@ -189,10 +189,11 @@ function New-VisioDocument{
             Open-VisioDocument $From
 
         }
+        
         if($landscape){
             $Visio.ActiveDocument.DiagramServicesEnabled=8
             $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=2
-        } else {
+        } elseif ($portrait) {
             $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=1
         }
         $Visio.ActiveDocument.SaveAs($path)
@@ -1180,6 +1181,40 @@ Function Set-RelativePositionDirection{
     }
 }
 
+<#
+        .SYNOPSIS 
+        Sets the text of multiple objects that have already been created
+        .DESCRIPTION
+        Sets the text of multiple objects that have already been created. Useful for updating static objects that are part of a template, such as title, author, etc.
+        .PARAMETER Map
+        A hashtable mapping names of objects to the text you want them to have.
+        .INPUTS
+        None. You cannot pipe objects to Set-VisioText.
+        .OUTPUTS
+        None
+        .EXAMPLE
+        Set-VisioText -Map @{Title='My first Visio Digram';
+        Author='Mike';
+        CreatedOn="$(get-date)"}
+#> 
+
+function Set-VisioText{
+    [CmdletBinding()]
+    Param([Hashtable]$Map)
+    
+    foreach($key in $Map.Keys){
+        $text=$map[$key]
+        $p=Get-VisioPage
+        while($key.Contains('/')){
+            $prefix,$key=$key.split('/',2)
+            $p=$p.Shapes[$prefix]
+        }
+        $shape=$p.Shapes[$key]
+        $shape.Characters.Text="$text"
+    }
+} 
+
+
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
 New-Alias -Name Stencil -Value Register-VisioStencil
@@ -1188,3 +1223,4 @@ New-Alias -Name Container -Value Register-VisioContainer
 New-Alias -Name Connector -Value Register-VisioConnector
 New-Alias -Name HyperLink -Value New-VisioHyperlink
 New-Alias -Name Layer -value New-VisioLayer
+New-Alias -Name Legend -value Set-VisioText
