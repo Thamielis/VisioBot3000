@@ -11,6 +11,7 @@ Stencil Containers -From C:\temp\MyContainers.vssx
 Shape WebServer -From Servers -MasterName 'Web Server'
 Container Location -From Containers -MasterName 'Location'
 
+Set-NextShapePosition -x 3 -y 5.5
 Location Datacenter {
        WebServer PrimaryServer
        WebServer SecondaryServer

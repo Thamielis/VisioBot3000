@@ -1115,6 +1115,30 @@ Function New-VisioLayer{
     }
 }
 
+
+<#
+        .SYNOPSIS 
+        Sets the next position to place a shape using relative positioning
+
+        .DESCRIPTION
+        Sets the next position to place a shape using relative positioning
+
+        .INPUTS
+        None.  
+
+        .OUTPUTS
+        None
+
+        .EXAMPLE
+        Set-NextShapePosition -x 5 -y 6
+         
+
+#>
+Function Set-NextShapePosition{
+    Param($x,$y)
+    $script:LastDroppedObject=@{X=$x;y=$y}
+}
+
 <#
         .SYNOPSIS 
         Returns the next position to place a shape using relative positioning
@@ -1129,11 +1153,10 @@ Function New-VisioLayer{
         HashTable
 
         .EXAMPLE
-        Get-NextShapePosition
+        Get-NextShapePosition  
         #returns a hashtable with X and Y position of next shape to place.
 
 #>
-
 Function Get-NextShapePosition{
     [CmdletBinding()]
     Param()
@@ -1142,6 +1165,8 @@ Function Get-NextShapePosition{
         $p=Get-VisioPage
         
         return @{X=1;Y=$p.Pagesheet.Cells('PAgeHeight').ResultIU-1}
+    } elseif ($LastDroppedObject -is [hashtable]) {
+        return $LastDroppedObject
     } else {
         if($RelativeOrientation -eq 'Horizontal'){
             $x=$LastDroppedObject.Cells('PinX').ResultIU + $LastDroppedObject.Cells('Width').ResultIU + 0.25
