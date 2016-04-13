@@ -9,6 +9,7 @@ Diagram C:\temp\TestVisio5.vsdx -From C:\temp\IntegrationDiagram.vstx
 Stencil Servers -From C:\temp\SERVER_U.vssx
 Stencil Containers -From C:\temp\MyContainers.vssx 
 Shape WebServer -From Servers -MasterName 'Web Server'
+Shape SQLServer -From Servers -masterName 'Database Server'
 Container Location -From Containers -MasterName 'Location'
 
 Set-NextShapePosition -x 3 -y 5.5
@@ -16,8 +17,11 @@ Location Datacenter {
        WebServer PrimaryServer
        WebServer SecondaryServer
        WebServer ThirdServer
+       Set-RelativePositionDirection Vertical
+       SQLServer DBServer
 }
 
+SQL -from PrimaryServer,SecondaryServer,ThirdServer -to DBServer
 
 Legend @{
             'Information/CreatedBy/Name'='Mike Shepard - the boss!';
