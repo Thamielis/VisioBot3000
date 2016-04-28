@@ -450,15 +450,16 @@ Function New-VisioShape{
                 $y=$RelativePosition.Y
             }
             $DroppedShape=$p.Drop($master.PSObject.BaseObject,$x,$y)
-            $Script:LastDroppedObject=$DroppedShape
             $DroppedShape.Name=$name
         } else {
             write-verbose "Existing shape <$label> found"
-        }
+       }
         $DroppedShape.Text=$label
         New-Variable -Name $name -Value $DroppedShape -Scope Global -Force
         write-output $DroppedShape
+        $Script:LastDroppedObject=$DroppedShape
     }
+
 }
 
 <#
@@ -650,7 +651,6 @@ Function New-VisioContainer{
             } else {
                 $sel=New-VisioSelection $firstShape -Visible
                 $droppedContainer=$page.DropContainer($shape,$page.Application.ActiveWindow.Selection)
-                $Script:LastDroppedObject=$droppedContainer
                 $droppedContainer.Name=$name
             } 
             $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
@@ -661,6 +661,8 @@ Function New-VisioContainer{
             }        
             $droppedContainer.ContainerProperties.FitToContents()
             $droppedContainer.Text=$label
+            $Script:LastDroppedObject=$droppedContainer
+
             $droppedContainer
 
         }
