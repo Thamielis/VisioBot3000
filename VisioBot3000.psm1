@@ -646,7 +646,7 @@ Function New-VisioContainer{
             [array]$containedObjects=& $contents
             $firstShape=$containedObjects[0]
             if($updatemode){
-                $droppedContainer=$page.Shapes | Where-Object {$_.Name -eq $label}
+                $droppedContainer=$page.Shapes | Where-Object {$_.Name -eq $Name}
             }
         
             if(get-variable droppedContainer -Scope Local -ErrorAction Ignore){

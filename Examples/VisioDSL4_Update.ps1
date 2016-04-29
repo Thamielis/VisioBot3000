@@ -1,6 +1,8 @@
-﻿import-module VisioBot3000 -Force
+﻿#clean-up because I'm re-running this over and over
+stop-process -Name VISIO -ea SilentlyContinue
+import-module VisioBot3000 -Force
 
-Diagram C:\temp\TestVisio3.vsdx 
+Diagram C:\temp\TestVisio3.vsdx  -Update
 
 # Define shapes, containers, and connectors for the diagram
 Stencil Containers -From C:\temp\MyContainers.vssx 
@@ -9,24 +11,26 @@ Shape WebServer -From Servers -MasterName 'Web Server'
 Container Location -From Containers -MasterName 'Location'
 Container Domain -From Containers -MasterName 'Domain'
 Container Logical -From Containers -MasterName 'Logical'
-Connector SQL -Color Green -arrow -bidirectional 
+Connector SQL -Color Red -arrow 
 
 #this is the diagram
 Logical MyFarm {
     Location MyCity {
-        Domain MyDomain_A {
-		    WebServer PrimaryServer  
-            WebServer SecondaryServer 
+        Domain MyDomain  {
+            WebServer PrimaryServer
+            WebServer HotSpare
+
+        }
+    }
+    Location DRSite {
+        Domain MyDomain -name SiteB_MyDomain {
+            Set-RelativePositionDirection Vertical
+		    WebServer BackupServer 
+            WebServer DRHotSpare
 	    }
     }
-
-    Location DRSite {
-        Domain MyDomain_B {
-		    WebServer BackupServer  
-  	    }
-    }
 }
-SQL -From PrimaryServer -To BackupServer
+SQL -From PrimaryServer -To BackupServer 
 Hyperlink $BackupServer -link http://google.com
 
-#Complete-Diagram 
+Complete-Diagram 
