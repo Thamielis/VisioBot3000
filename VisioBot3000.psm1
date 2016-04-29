@@ -435,8 +435,8 @@ Function New-VisioShape{
         if($master -is [string]){
             $master=$script:Shapes[$master]
         }
-        if(!$name){
-            $name=$label
+        if(!$label){
+            $label=$name
         }
  
         $p=get-VisioPage
@@ -549,9 +549,9 @@ Function New-VisioConnector{
         $name,
         [System.Drawing.Color]$color,
         [switch]$Arrow,
-        [switch]$bidirectional,
+        [switch]$bidirectional, 
     $label)
-    $colorFormula="rgb($($color.R),$($color.G),$($color.B))"
+    $colorFormula="=rgb($($color.R),$($color.G),$($color.B))"
     if($PSCmdlet.ShouldProcess('Visio','Connect shapes with a connector')){
         $CurrentPage=Get-VisioPage
         foreach($dest in $to){
@@ -588,7 +588,7 @@ Function New-VisioConnector{
                     $connector.Cells('EndArrow')=0
                     $connector.Cells('BeginArrow')=0
                 }
-                Remove-variable Connector
+                Remove-variable Connector -ErrorAction SilentlyContinue
             }
         }
     }
@@ -858,7 +858,7 @@ Function Register-VisioConnector{
         [System.Drawing.Color]$color,
         [switch]$Arrow,
     [switch]$bidirectional)
-    new-item -Path Function:\ -Name "global`:$name" -value {param($from,$to,$label) New-VisioConnector $from $to $name $color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $label}.GetNewClosure() -force  | out-null
+    new-item -Path Function:\ -Name "global`:$name" -value {param($from,$to,$label) New-VisioConnector -from $from -to $to -name $name -color $color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $label}.GetNewClosure() -force  | out-null
 }
 
 
