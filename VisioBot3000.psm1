@@ -38,14 +38,19 @@ $RelativeOrientation='Horizontal'
 #>
 Function New-VisioApplication{
     [CmdletBinding(SupportsShouldProcess=$true)]
-    Param([switch]$Hide)
+    Param([switch]$Hide,
+          [switch]$Passthru)
     if($PSCmdlet.ShouldProcess('Creating a new instance of Visio','')){
         if ($Hide){
             $script:Visio=New-Object -ComObject Visio.InvisibleApp 
         } else {
             $script:Visio = New-Object -ComObject Visio.Application
         }
+        if($Passthru){
+            $script:Visio
+        }
     }
+
 
 }
 
