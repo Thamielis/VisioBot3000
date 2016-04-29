@@ -1,6 +1,7 @@
 stop-process -Name VISIO -ea SilentlyContinue
-remove-item c:\temp\testvisio.vsdx -ea SilentlyContinue
+remove-item c:\temp\VisioDSL2.vsdx -ea SilentlyContinue
 import-module VisioBot3000 -Force
+
 Diagram C:\temp\TestVisio.vsdx 
 Stencil Containers -From C:\temp\MyContainers.vssx 
 Stencil Servers -From C:\temp\SERVER_U.vssx

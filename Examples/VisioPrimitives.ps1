@@ -10,16 +10,16 @@ Register-VisioContainer -Name Location -From Containers -MasterName 'Location'
 Register-VisioContainer -Name Domain -From Containers -MasterName 'Domain'
 Register-VisioContainer -Name Logical -From Containers -MasterName 'Logical'
 
-New-VisioContainer -shape (Get-VisioShape Logical) -Name MyFarm -contents {
-    New-VisioContainer -shape (Get-VisioShape Location) -Name MyCity -contents {
-        New-VisioContainer -shape (Get-VisioShape Domain) -Name MyDomain -contents {
-		    New-VisioShape -master WebServer -Name PrimaryServer -x 5 -y 5
+New-VisioContainer -shape (Get-VisioShape Logical) -Label MyFarm -contents {
+    New-VisioContainer -shape (Get-VisioShape Location) -Label MyCity -contents {
+        New-VisioContainer -shape (Get-VisioShape Domain) -Label MyDomain -contents {
+		    New-VisioShape -master WebServer -Label PrimaryServer -x 5 -y 5
 	    }
     }
-    New-VisioContainer -shape (Get-VisioShape Location) -Name DRSite -contents {
-        New-VisioContainer -shape (Get-VisioShape Domain) -Name MyDomain -contents {
-		    New-VisioShape -master WebServer -Name BackupServer -x 5 -y 8
+    New-VisioContainer -shape (Get-VisioShape Location) -Label DRSite -contents {
+        New-VisioContainer -shape (Get-VisioShape Domain) -Label MyDomain -contents {
+		    New-VisioShape -master WebServer -Label BackupServer -x 5 -y 8
 	    }
     }
-    New-VisioConnector -From PrimaryServer -To BackupServer -Name SQL -Color Red -Arrow
+    New-VisioConnector -From PrimaryServer -To BackupServer -Label SQL -Color Red -Arrow
 }

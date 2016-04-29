@@ -19,10 +19,10 @@ Register-VisioShape -Name DBServer -From Servers -MasterName 'Database Server'
 Register-VisioContainer -Name Domain -From Containers -MasterName 'Domain'
 
 #draw a container with two items in it
-New-VisioContainer -shape (get-visioshape Domain) -name MyDomain -contents {
-   New-VisioShape -master WebServer -name PrimaryServer -x 5 -y 5
-   New-VisioShape -master DBServer -Name SQL01 -x 5 -y 7
+New-VisioContainer -shape (get-visioshape Domain) -Label MyDomain -contents {
+   New-VisioShape -master WebServer -Label PrimaryServer -x 5 -y 5
+   New-VisioShape -master DBServer -Label SQL01 -x 5 -y 7
 }
 
 #add a connector
-New-VisioConnector -from PrimaryServer -to SQL01 -name SQL -color Red -Arrow
+New-VisioConnector -from PrimaryServer -to SQL01 -Label SQL -color Red -Arrow

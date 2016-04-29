@@ -27,7 +27,7 @@ Logical MyFarm {
         Domain MyDomain -name SiteB_MyDomain {
             Set-RelativePositionDirection Vertical
 		    WebServer BackupServer 
-            WebServer DRHotSpare
+
 	    }
     }
 }

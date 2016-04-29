@@ -440,8 +440,8 @@ Function New-VisioShape{
         if($master -is [string]){
             $master=$script:Shapes[$master]
         }
-        if(!$label){
-            $label=$name
+        if(!$name){
+            $name=$label
         }
  
         $p=get-VisioPage
@@ -637,8 +637,8 @@ Function New-VisioContainer{
         [Scriptblock]$contents,
         $shape,
         $label)
-    if(!$label){
-        $label=$name
+    if(!$name){
+        $name=$label
     }
      if($PSCmdlet.ShouldProcess('Visio','Drop a container around shapes')){
         $page=Get-VisioPage
@@ -825,7 +825,7 @@ Function Register-VisioContainer{
     $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $masterName}
     $script:Shapes[$name]=$newshape
     $outerName=$name
-    new-item -Path Function:\ -Name "global`:$outername" -value {param($label,$contents,$name) $shape=get-visioshape $outername; New-VisioContainer  $label $contents $shape $name}.GetNewClosure() -force  | out-null
+    new-item -Path Function:\ -Name "global`:$outername" -value {param($label,$contents,$name) $shape=get-visioshape $outername; New-VisioContainer -label $label -contents $contents -shape $shape -name $name}.GetNewClosure() -force  | out-null
 
 }
 <#
