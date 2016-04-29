@@ -37,7 +37,7 @@ $RelativeOrientation='Horizontal'
 
 #>
 Function New-VisioApplication{
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$True)]
     Param([switch]$Hide,
           [switch]$Passthru)
     if($PSCmdlet.ShouldProcess('Creating a new instance of Visio','')){
@@ -120,7 +120,7 @@ Function Get-VisioApplication{
 #>
 Function Open-VisioDocument{
     [CmdletBinding()]
-    Param([string]$path,
+    Param([string]$Path,
         $Visio=$script:Visio,
     [switch]$Update)
     if(!$Visio){
@@ -128,7 +128,7 @@ Function Open-VisioDocument{
         $Visio=$script:Visio
     }
     $documents = $Visio.Documents
-    $documents.Add($path) | out-null
+    $documents.Add($Path) | out-null
     if($Update){
         $script:updatemode=$True 
     }
@@ -174,12 +174,12 @@ Function Open-VisioDocument{
 
 #> 
 function New-VisioDocument{
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$True)]
     Param([string]$Path,
         [string]$From='',
         $Visio=$script:visio,
         [switch]$Update,
-    [switch]$landscape,[switch]$portrait)
+    [switch]$Landscape,[switch]$portrait)
     if($PSCmdlet.ShouldProcess('Creating a new Visio Document','')){
         if(!$Visio){
             New-VisioApplication
@@ -189,19 +189,19 @@ function New-VisioDocument{
             if($From -ne ''){
                 Write-Warning 'New-VisioDocument: -From ignored when -Update is present'
             }
-            Open-VisioDocument $path -Update
+            Open-VisioDocument $Path -Update
         } else {
             Open-VisioDocument $From
 
         }
         
-        if($landscape){
+        if($Landscape){
             $Visio.ActiveDocument.DiagramServicesEnabled=8
             $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=2
         } elseif ($portrait) {
             $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=1
         }
-        $Visio.ActiveDocument.SaveAs($path)
+        $Visio.ActiveDocument.SaveAs($Path)
     }
 }
 
@@ -233,14 +233,14 @@ Function Get-VisioDocument{
 
 
 Function New-VisioPage{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param([string]$name,
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param([string]$Name,
     $Visio=$script:Visio)
 
     if($PSCmdlet.ShouldProcess('Creating a new Visio Page')){
         $page=$Visio.ActiveDocument.Pages.Add( )
-        if($name){
-            $page.NameU=$name 
+        if($Name){
+            $page.NameU=$Name 
         }
         $page
     }
@@ -271,11 +271,11 @@ Function New-VisioPage{
 
 #>
 function Set-VisioPage{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param([string]$name,
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param([string]$Name,
     $Visio=$script:Visio)
     if($PSCmdlet.ShouldProcess('Switching to a different Visio Page','')){
-        $page=get-VisioPage $name
+        $page=get-VisioPage $Name
         $Visio.ActiveWindow.Page=$page 
     }
 } 
@@ -308,12 +308,12 @@ function Set-VisioPage{
 #>
 Function Get-VisioPage{
     [CmdletBinding()]
-    Param($name)
-    if ($name) {
+    Param($Name)
+    if ($Name) {
         try {
-            $Visio.ActiveDocument.Pages($name) 
+            $Visio.ActiveDocument.Pages($Name) 
         } catch {
-            write-warning "$name not found"
+            write-warning "$Name not found"
         }
     } else {
         $Visio.ActivePage
@@ -351,11 +351,11 @@ Function Get-VisioPage{
 
 #>
 Function Remove-VisioPage{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param($name)
-    if($PSCmdlet.ShouldProcess('Removing page named <$name> or current page','')){
-        if ($name) {
-            $Visio.ActiveDocument.Pages($name).Delete(0)
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param($Name)
+    if($PSCmdlet.ShouldProcess('Removing page named <$Name> or current page','')){
+        if ($Name) {
+            $Visio.ActiveDocument.Pages($Name).Delete(0)
         } else {
             $Visio.ActivePage.Delete(0)
         }
@@ -391,10 +391,10 @@ Function Remove-VisioPage{
 
 #>
 Function Set-VisioPageLayout{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param([switch]$landscape,[switch]$portrait)
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param([switch]$Landscape,[switch]$Portrait)
     if($PSCmdlet.ShouldProcess('Visio','Switch page layout')){
-        if($landscape){
+        if($Landscape){
             $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=2
         } else {
             $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=1
@@ -434,33 +434,33 @@ Function Set-VisioPageLayout{
 
 #>
 Function New-VisioShape{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param($master,$label,$x,$y,$name)
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param($Master,$Label,$X,$Y,$Name)
     if($PSCmdlet.ShouldProcess('Visio','Drop shape on the page')){
-        if($master -is [string]){
-            $master=$script:Shapes[$master]
+        if($Master -is [string]){
+            $Master=$script:Shapes[$Master]
         }
-        if(!$name){
-            $name=$label
+        if(!$Name){
+            $Name=$Label
         }
  
         $p=get-VisioPage
         if($updateMode){
-            $DroppedShape=$p.Shapes | Where-Object {$_.Name -eq $label}
+            $DroppedShape=$p.Shapes | Where-Object {$_.Name -eq $Label}
         }
         if(-not (get-variable DroppedShape -Scope Local -ErrorAction Ignore) -or $DroppedShape -eq $null){
-            if(-not $x){
+            if(-not $X){
                 $RelativePosition=Get-NextShapePosition
-                $x=$RelativePosition.X
-                $y=$RelativePosition.Y
+                $X=$RelativePosition.X
+                $Y=$RelativePosition.Y
             }
-            $DroppedShape=$p.Drop($master.PSObject.BaseObject,$x,$y)
-            $DroppedShape.Name=$name
+            $DroppedShape=$p.Drop($Master.PSObject.BaseObject,$X,$Y)
+            $DroppedShape.Name=$Name
         } else {
-            write-verbose "Existing shape <$label> found"
+            write-verbose "Existing shape <$Label> found"
        }
-        $DroppedShape.Text=$label
-        New-Variable -Name $name -Value $DroppedShape -Scope Global -Force
+        $DroppedShape.Text=$Label
+        New-Variable -Name $Name -Value $DroppedShape -Scope Global -Force
         write-output $DroppedShape
         $Script:LastDroppedObject=$DroppedShape
     }
@@ -498,11 +498,11 @@ Function New-VisioShape{
 
 #>
 Function New-VisioRectangle{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param($x0,$y0,$x1,$y1)
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param($X0,$Y0,$X1,$Y1)
     if($PSCmdlet.ShouldProcess('Visio','Draw a rectangle on the page')){    
         $p=get-visioPage
-        $p.DrawRectangle($x0,$y0,$x1,$y1)
+        $p.DrawRectangle($X0,$Y0,$X1,$Y1)
     }
 }
 
@@ -548,19 +548,19 @@ Function New-VisioRectangle{
 
 #>
 Function New-VisioConnector{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param([array]$from,
-        $to,
-        $name,
-        [System.Drawing.Color]$color,
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param([array]$From,
+        $To,
+        $Name,
+        [System.Drawing.Color]$Color,
         [switch]$Arrow,
         [switch]$bidirectional, 
-    $label)
-    $colorFormula="=rgb($($color.R),$($color.G),$($color.B))"
+    $Label)
+    $ColorFormula="=rgb($($Color.R),$($Color.G),$($Color.B))"
     if($PSCmdlet.ShouldProcess('Visio','Connect shapes with a connector')){
         $CurrentPage=Get-VisioPage
-        foreach($dest in $to){
-            foreach($source in $from){
+        foreach($dest in $To){
+            foreach($source in $From){
                 if($source -is [string]){
                     $source=$CurrentPage.Shapes[$source]
                 }
@@ -568,7 +568,7 @@ Function New-VisioConnector{
                     $dest=$CurrentPage.Shapes[$dest]
                 }
 
-                $CalculatedName='{0}_{1}_{2}' -f $label,$source.Name,$dest.Name
+                $CalculatedName='{0}_{1}_{2}' -f $Label,$source.Name,$dest.Name
                 if($updatemode){
                     $connector=$CurrentPage.Shapes | Where-Object {$_.Name -eq $CalculatedName}
                 }
@@ -577,8 +577,8 @@ Function New-VisioConnector{
                     $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
                     $connector.Name=$CalculatedName
                 }
-                $connector.Text=$label
-                $connector.CellsU('LineColor').Formula=$colorFormula
+                $connector.Text=$Label
+                $connector.CellsU('LineColor').Formula=$ColorFormula
                 $connector.CellsSRC(1,23,10) = 16
                 $connector.CellsSRC(1,23,19) = 1 
 
@@ -632,18 +632,18 @@ Function New-VisioConnector{
 
 #>
 Function New-VisioContainer{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param( [string]$name,
-        [Scriptblock]$contents,
-        $shape,
-        $label)
-    if(!$name){
-        $name=$label
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param( [string]$Name,
+        [Scriptblock]$Contents,
+        $Shape,
+        $Label)
+    if(!$Name){
+        $Name=$Label
     }
      if($PSCmdlet.ShouldProcess('Visio','Drop a container around shapes')){
         $page=Get-VisioPage
-        if($contents){
-            [array]$containedObjects=& $contents
+        if($Contents){
+            [array]$containedObjects=& $Contents
             $firstShape=$containedObjects[0]
             if($updatemode){
                 $droppedContainer=$page.Shapes | Where-Object {$_.Name -eq $Name}
@@ -655,8 +655,8 @@ Function New-VisioContainer{
                 }
             } else {
                 $sel=New-VisioSelection $firstShape -Visible
-                $droppedContainer=$page.DropContainer($shape,$page.Application.ActiveWindow.Selection)
-                $droppedContainer.Name=$name
+                $droppedContainer=$page.DropContainer($Shape,$page.Application.ActiveWindow.Selection)
+                $droppedContainer.Name=$Name
             } 
             $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
             $containedObjects | select-object -Skip 1 | % { 
@@ -665,13 +665,13 @@ Function New-VisioContainer{
                 }
             }        
             $droppedContainer.ContainerProperties.FitToContents()
-            $droppedContainer.Text=$label
+            $droppedContainer.Text=$Label
             $Script:LastDroppedObject=$droppedContainer
 
             $droppedContainer
 
         }
-        New-Variable -Name $name -Value $droppedContainer -Scope Global -Force
+        New-Variable -Name $Name -Value $droppedContainer -Scope Global -Force
     }
 }
 
@@ -779,15 +779,15 @@ Function Register-VisioStencil{
 #>
 Function Register-VisioShape{
     [CmdletBinding()]
-    Param([string]$name,
+    Param([string]$Name,
         [Alias('From')][string]$StencilName,
-    [string]$masterName)
+    [string]$MasterName)
  
 
-    $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $masterName}
-    $script:Shapes[$name]=$newshape
-    $outerName=$name 
-    new-item -Path Function:\ -Name "global`:$outername" -value {param($label, $x,$y, $name) $shape=get-visioshape $outername; New-VisioShape $shape $label $x $y -name $name}.GetNewClosure() -force  | out-null
+    $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $MasterName}
+    $script:Shapes[$Name]=$newshape
+    $outerName=$Name 
+    new-item -Path Function:\ -Name "global`:$outername" -value {param($Label, $X,$Y, $Name) $Shape=get-visioshape $outername; New-VisioShape $Shape $Label $X $Y -name $Name}.GetNewClosure() -force  | out-null
 
 }
 <#
@@ -817,15 +817,15 @@ Function Register-VisioShape{
 #>
 Function Register-VisioContainer{
     [CmdletBinding()]
-    Param([string]$name,
+    Param([string]$Name,
         [Alias('From')][string]$StencilName,
-    [string]$masterName)
+    [string]$MasterName)
  
 
-    $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $masterName}
-    $script:Shapes[$name]=$newshape
-    $outerName=$name
-    new-item -Path Function:\ -Name "global`:$outername" -value {param($label,$contents,$name) $shape=get-visioshape $outername; New-VisioContainer -label $label -contents $contents -shape $shape -name $name}.GetNewClosure() -force  | out-null
+    $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $MasterName}
+    $script:Shapes[$Name]=$newshape
+    $outerName=$Name
+    new-item -Path Function:\ -Name "global`:$outername" -value {param($Label,$Contents,$Name) $Shape=get-visioshape $outername; New-VisioContainer -label $Label -contents $Contents -shape $Shape -name $Name}.GetNewClosure() -force  | out-null
 
 }
 <#
@@ -859,11 +859,11 @@ Function Register-VisioContainer{
 #>
 Function Register-VisioConnector{
     [CmdletBinding()]
-    Param([string]$name,
-        [System.Drawing.Color]$color,
+    Param([string]$Name,
+        [System.Drawing.Color]$Color,
         [switch]$Arrow,
     [switch]$bidirectional)
-    new-item -Path Function:\ -Name "global`:$name" -value {param($from,$to,$label) New-VisioConnector -from $from -to $to -name $name -color $color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $label}.GetNewClosure() -force  | out-null
+    new-item -Path Function:\ -Name "global`:$Name" -value {param($From,$To,$Label) New-VisioConnector -from $From -to $To -name $Name -color $Color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $Label}.GetNewClosure() -force  | out-null
 }
 
 
@@ -889,8 +889,8 @@ Function Register-VisioConnector{
 #>
 Function Get-VisioShape{
     [CmdletBinding()]
-    Param([string]$name)
-    $script:Shapes[$name]
+    Param([string]$Name)
+    $script:Shapes[$Name]
 }
 
 <#
@@ -918,16 +918,16 @@ Function Get-VisioShape{
 
 #>
 Function New-VisioHyperlink{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param($shape,
-    $link)
+    [CmdletBinding(SupportsShouldProcess=$True)]
+    Param($Shape,
+    $Link)
     if($PSCmdlet.ShouldProcess('Visio','Create a hyperlink on a shape')){
         $CurrentPage=Get-VisioPage
-        if($shape -is [string]){
-            $shape=$CurrentPage.Shapes[$shape]
+        if($Shape -is [string]){
+            $Shape=$CurrentPage.Shapes[$Shape]
         }
-        $linkObject=$shape.AddHyperLink()
-        $linkObject.Address=$link
+        $LinkObject=$Shape.AddHyperLink()
+        $LinkObject.Address=$Link
     }
 }
 
@@ -955,7 +955,7 @@ Function New-VisioHyperlink{
         New-VisioSelection -Objects Server1,Server2
 #>
 Function New-VisioSelection{
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$True)]
     Param([array]$Objects,[switch]$Visible)
     if($PSCmdlet.ShouldProcess('Visio','Create a selection object')){
         $V=Get-VisioApplication
@@ -1002,12 +1002,12 @@ Function New-VisioSelection{
         Set-VisioShapeData -shape $WebServer -Name IPAddress -Value 10.1.1.5
 #>
 Function Set-VisioShapeData{
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$True)]
     Param($Shape,
         $Name,
     $Value)
         if($PSCmdlet.ShouldProcess('Visio','Set a value for a custom shape data element')){
-        $shape.Cells("Prop.$Name").Formula="=`"$value`""
+        $Shape.Cells("Prop.$Name").Formula="=`"$value`""
     }
 }
 
@@ -1038,7 +1038,7 @@ Function Get-VisioShapeData{
     Param($Shape,
     $Name)
     if($PSCmdlet.ShouldProcess('Visio','Retrieve the value from a custom shape data element')){
-        $shape.Cells("Prop.$Name").Formula.TrimStart('"').TrimEnd('"') 
+        $Shape.Cells("Prop.$Name").Formula.TrimStart('"').TrimEnd('"') 
     }
 }
 
@@ -1097,7 +1097,7 @@ Function Complete-Diagram{
         New-VisioLayer -Layer WebServers -Contents WebServer1,WebServer2 -Preserve
 #>
 Function New-VisioLayer{
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$True)]
     Param([string]$LayerName,[Array]$Contents,[switch]$Preserve)
     if($PSCmdlet.ShouldProcess('Visio','Create a layer on the current page')){
         if($Preserve){
@@ -1110,8 +1110,8 @@ Function New-VisioLayer{
         if ($layer -eq $null){
             $layer=$p.Layers.Add($LayerName) 
         }
-        if ($contents -is [scriptblock]){
-            $Contents = & $contents
+        if ($Contents -is [scriptblock]){
+            $Contents = & $Contents
         }
         foreach($item in [array]$Contents){
             if($item -is [string]){
@@ -1142,8 +1142,8 @@ Function New-VisioLayer{
 
 #>
 Function Set-NextShapePosition{
-    Param($x,$y)
-    $script:LastDroppedObject=@{X=$x;y=$y}
+    Param($X,$Y)
+    $script:LastDroppedObject=@{X=$X;y=$Y}
 }
 
 <#
@@ -1176,13 +1176,13 @@ Function Get-NextShapePosition{
         return $LastDroppedObject
     } else {
         if($RelativeOrientation -eq 'Horizontal'){
-            $x=$LastDroppedObject.Cells('PinX').ResultIU + $LastDroppedObject.Cells('Width').ResultIU + 0.25
-            $y=$LastDroppedObject.Cells('PinY').ResultIU 
+            $X=$LastDroppedObject.Cells('PinX').ResultIU + $LastDroppedObject.Cells('Width').ResultIU + 0.25
+            $Y=$LastDroppedObject.Cells('PinY').ResultIU 
         } else {
-            $x=$LastDroppedObject.Cells('PinX').ResultIU 
-            $y=$LastDroppedObject.Cells('PinY').ResultIU - $LastDroppedObject.Cells('Height').ResultIU - 0.25
+            $X=$LastDroppedObject.Cells('PinX').ResultIU 
+            $Y=$LastDroppedObject.Cells('PinY').ResultIU - $LastDroppedObject.Cells('Height').ResultIU - 0.25
         }
-        Return @{X=$x;Y=$y}
+        Return @{X=$X;Y=$Y}
     }
 }
 
@@ -1208,7 +1208,7 @@ Function Get-NextShapePosition{
 
 #>
 Function Set-RelativePositionDirection{
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding(SupportsShouldProcess=$True)]
     Param([ValidateSet('Horizontal','Vertical')]$Orientation)
     if($PSCmdlet.ShouldProcess('Visio','Sets VisioBot''s orientation for relative positioning')){
         $script:RelativeOrientation=$Orientation
@@ -1243,8 +1243,8 @@ function Set-VisioText{
             $prefix,$key=$key.split('/',2)
             $p=$p.Shapes[$prefix]
         }
-        $shape=$p.Shapes[$key]
-        $shape.Characters.Text="$text"
+        $Shape=$p.Shapes[$key]
+        $Shape.Characters.Text="$text"
     }
 } 
 
