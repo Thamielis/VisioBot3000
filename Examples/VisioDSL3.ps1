@@ -15,6 +15,7 @@ Container Logical -From Containers -MasterName 'Logical'
 Connector SQL -Color Red -arrow 
 
 #this is the diagram
+Set-NextShapePosition -x 3.5 -y 7
 Logical MyFarm {
     Location MyCity {
         Domain MyDomain  {
