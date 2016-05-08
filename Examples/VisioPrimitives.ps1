@@ -10,14 +10,14 @@ Register-VisioContainer -Name Location -From Containers -MasterName 'Location'
 Register-VisioContainer -Name Domain -From Containers -MasterName 'Domain'
 Register-VisioContainer -Name Logical -From Containers -MasterName 'Logical'
 
-New-VisioContainer -shape (Get-VisioShape Logical) -Label MyFarm -contents {
-    New-VisioContainer -shape (Get-VisioShape Location) -Label MyCity -contents {
+New-VisioContainer -shape Logical -Label MyFarm -contents {
+    New-VisioContainer -shape Location -Label MyCity -contents {
         New-VisioContainer -shape (Get-VisioShape Domain) -Label MyDomain -contents {
 		    New-VisioShape -master WebServer -Label PrimaryServer -x 5 -y 5
 	    }
     }
-    New-VisioContainer -shape (Get-VisioShape Location) -Label DRSite -contents {
-        New-VisioContainer -shape (Get-VisioShape Domain) -Label MyDomain -contents {
+    New-VisioContainer -shape  Location  -Label DRSite -contents {
+        New-VisioContainer Get-VisioShape Domain  -Label MyDomain -contents {
 		    New-VisioShape -master WebServer -Label BackupServer -x 5 -y 8
 	    }
     }
