@@ -755,7 +755,9 @@ Function Register-VisioShape{
         [Alias('From')][string]$StencilName,
     [string]$MasterName)
  
-
+    if(!$MasterName){
+      $MasterName=$Name
+    }
     $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $MasterName}
     $script:Shapes[$Name]=$newshape
     $outerName=$Name 
@@ -793,7 +795,9 @@ Function Register-VisioContainer{
         [Alias('From')][string]$StencilName,
     [string]$MasterName)
  
-
+    if(!$MasterName){
+        $MasterName=$Name
+    }
     $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $MasterName}
     $script:Shapes[$Name]=$newshape
     $outerName=$Name
