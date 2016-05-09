@@ -458,7 +458,7 @@ Function New-VisioShape{
             $DroppedShape.Name=$Name
         } else {
             write-verbose "Existing shape <$Label> found"
-       }
+        }
         $DroppedShape.Text=$Label
         New-Variable -Name $Name -Value $DroppedShape -Scope Global -Force
         write-output $DroppedShape
@@ -556,7 +556,7 @@ Function New-VisioConnector{
         [switch]$Arrow,
         [switch]$bidirectional, 
     $Label)
-    $ColorFormula="=rgb($($Color.R),$($Color.G),$($Color.B))"
+    $ColorFormula=get-VisioColorFormula $color
     if($PSCmdlet.ShouldProcess('Visio','Connect shapes with a connector')){
         $CurrentPage=Get-VisioPage
         foreach($dest in $To){
@@ -1223,6 +1223,7 @@ Function Set-RelativePositionDirection{
         Sets the text of multiple objects that have already been created
         .DESCRIPTION
         Sets the text of multiple objects that have already been created. Useful for updating static objects that are part of a template, such as title, author, etc.
+        Nested objects can be referenced with a slash (e.g. TitleBox/Title, or TitleBox/Subtitle)
         .PARAMETER Map
         A hashtable mapping names of objects to the text you want them to have.
         .INPUTS
@@ -1251,6 +1252,26 @@ function Set-VisioText{
     }
 } 
 
+<#
+        .SYNOPSIS 
+        Outputs a Visio color formula based on the color parameter
+        .DESCRIPTION
+        Outputs a Visio color formula based on the color parameter
+        .PARAMETER Color
+        A color you want to use in a Visio diagram
+        .INPUTS
+        None. You cannot pipe objects to Get-VisioColorFormula.
+        .OUTPUTS
+        None
+        .EXAMPLE
+        $formula=Get-VisioColorFormula Red;
+ #> 
+ function Get-VisioColorFormula{
+    [CmdletBinding()]
+    Param([System.Drawing.Color]$color)
+    
+    return "=rgb($($Color.R),$($Color.G),$($Color.B))"
+}
 
 #Aliases
 New-Alias -Name Diagram -Value New-VisioDocument
