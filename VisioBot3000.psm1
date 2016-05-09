@@ -680,37 +680,6 @@ Function New-VisioContainer{
 
 <#
         .SYNOPSIS 
-        Loads a built-in stencil  
-
-        .DESCRIPTION
-        Loads a built-in stencil  
-
-        .PARAMETER BuiltinStencil
-        Which built-in stencil to load
-
-        .PARAMETER Name
-        What name to use to reference the stencil
-
-        .INPUTS
-        None. You cannot pipe objects to Register-VisioBuiltinStencil
-
-        .OUTPUTS
-        None
-
-        .EXAMPLE
-        Register-VisioBuiltinStencil -BuiltInStencil Containers -Name VisioContainers
-#>
-Function Register-VisioBuiltinStencil{
-    [CmdletBinding()]
-    Param([ValidateSet('Backgrounds','Borders','Containers','Callouts','Legends')]
-        [string]$BuiltInStencil,
-    [String]$Name)
-    $stencilID=@('Backgrounds','Borders','Containers','Callouts','Legends').IndexOf($BuiltInStencil)
-    $stencilPath=$Visio.GetBuiltInStencilFile($stencilID,$vis.MSDefault)
-    Register-VisioStencil -Path $stencilPath -Name $Name 
-}
-<#
-        .SYNOPSIS 
         Loads a stencil and gives it a name
 
         .DESCRIPTION
@@ -742,16 +711,16 @@ Function Register-VisioStencil{
     [CmdletBinding()]
     Param([string]$Name,
         [Alias('From')][string]$Path,
-    [switch]$BuiltIn)
+    [ValidateSet('Backgrounds','Borders','Containers','Callouts','Legends')][string]$BuiltIn)
     if($BuiltIn){
-        if(!$Path){
-            $Path=$Name
-        }
-        Register-VisioBuiltinStencil -BuiltInStencil $Path -Name $Name 
+        $stencilID=@('Backgrounds','Borders','Containers','Callouts','Legends').IndexOf($BuiltIn)
+        $stencilPath=$Visio.GetBuiltInStencilFile($stencilID,$vis.MSDefault)
+        $stencil=$Visio.Documents.OpenEx($stencilPath,$vis.OpenHidden)
+         
     } else {
         $stencil=$Visio.Documents.OpenEx($Path,$vis.OpenHidden)
-        $script:stencils[$Name]=$stencil
     }  
+    $script:stencils[$Name]=$stencil
 }
 
 <#
