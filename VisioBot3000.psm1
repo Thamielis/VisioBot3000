@@ -6,6 +6,7 @@
 $Visio=0
 $Shapes=@{}
 $Stencils=@{}
+$StencilSearchPath=@()
 $updateMode=$false 
 $LastDroppedObject=0
 $RelativeOrientation='Horizontal'
@@ -49,6 +50,7 @@ Function New-VisioApplication{
         if($Passthru){
             $script:Visio
         }
+        [System.Collections.ArrayList]$script:StencilSearchPath=@(join-path (join-path $script:Visio.Path 'Visio Content') $script:Visio.Language)
     }
 
 
@@ -718,7 +720,23 @@ Function Register-VisioStencil{
         $stencil=$Visio.Documents.OpenEx($stencilPath,$vis.OpenHidden)
          
     } else {
-        $stencil=$Visio.Documents.OpenEx($Path,$vis.OpenHidden)
+        if($Path -eq (split-path -path $Path -leaf)){
+            #if the path is just a filename
+            if(-not(test-path $path)){
+                #and the filename doesn't exist in the current directory
+                foreach($folder in $StencilSearchPath){
+                   if (test-path (join-path -Path $folder -ChildPath $path)){
+                      $path=join-path -Path $folder -ChildPath $path
+                      break
+                   }
+                }
+            }
+        }
+        if (test-path $path){
+            $stencil=$Visio.Documents.OpenEx($Path,$vis.OpenHidden)
+        } else {
+            write-error "$path not found when registering the stencil"
+        }
     }  
     $script:stencils[$Name]=$stencil
 }
@@ -1244,6 +1262,68 @@ function Set-VisioText{
     Param([System.Drawing.Color]$color)
     
     return "=rgb($($Color.R),$($Color.G),$($Color.B))"
+}
+
+
+<#
+        .SYNOPSIS 
+        Adds a path to the Stencil search path list
+        .DESCRIPTION
+        Adds a path to the Stencil search path list.  When registering a stencil, if you only supply a filename, the function will search 
+        in the folders listed in the Stencil search path for a matching file and use the first one found.
+        .PARAMETER Path
+        The path to add to the search path.
+        .INPUTS
+        None. You cannot pipe objects to Add-StencilSearchPath.
+        .OUTPUTS
+        None
+        .EXAMPLE
+        Add-StencilSearchPath 'C:\temp'
+ #> 
+ function Add-StencilSearchPath{
+    [CmdletBinding()]
+    Param([string]$Path)
+    $script:StencilSearchPath.Add($Path)
+}
+
+<#
+        .SYNOPSIS 
+        Resets the stencil search path list
+        .DESCRIPTION
+        Resets the stencil search path list.  When registering a stencil, if you only supply a filename, the function will search 
+        in the folders listed in the Stencil search path for a matching file and use the first one found.
+        .PARAMETER Path
+        The list of paths to set the search path to.
+        .INPUTS
+        None. You cannot pipe objects to Set-StencilSearchPath.
+        .OUTPUTS
+        None
+        .EXAMPLE
+        Set-StencilSearchPath 'C:\temp','C:\Program Files (x86)\Microsoft Office\Office15\Visio Content'
+ #> 
+ function Set-StencilSearchPath{
+    [CmdletBinding()]
+    Param([string[]]$Path)
+    $script:StencilSearchPath=$Path
+}
+
+<#
+        .SYNOPSIS 
+        Retrieves the stencil search path
+        .DESCRIPTION
+        Retrieves the stencil search path.  When registering a stencil, if you only supply a filename, the function will search 
+        in the folders listed in the Stencil search path for a matching file and use the first one found.
+        .INPUTS
+        None. You cannot pipe objects to Get-StencilSearchPath.
+        .OUTPUTS
+        String[]
+        .EXAMPLE
+        Get-StencilSearchPath 
+ #> 
+ function Get-StencilSearchPath{
+    [CmdletBinding()]
+    Param( )
+    $script:StencilSearchPath 
 }
 
 #Aliases
