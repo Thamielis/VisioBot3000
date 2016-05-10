@@ -11,6 +11,7 @@ $updateMode=$false
 $LastDroppedObject=0
 $RelativeOrientation='Horizontal'
 
+[System.Collections.ArrayList]$GlobalFunctions=@()
 
 <#
         .SYNOPSIS 
@@ -788,7 +789,7 @@ Function Register-VisioShape{
     $script:Shapes[$Name]=$newshape
     $outerName=$Name 
     new-item -Path Function:\ -Name "global`:$outername" -value {param($Label, $X,$Y, $Name) $Shape=get-visioshape $outername; New-VisioShape $Shape $Label $X $Y -name $Name}.GetNewClosure() -force  | out-null
-
+    $script:GlobalFunctions.Add($outerName)
 }
 <#
         Copies a master for a container from a stencil and gives it a name.
@@ -828,7 +829,7 @@ Function Register-VisioContainer{
     $script:Shapes[$Name]=$newshape
     $outerName=$Name
     new-item -Path Function:\ -Name "global`:$outername" -value {param($Label,$Contents,$Name) New-VisioContainer -label $Label -contents $Contents -shape $outername -name $Name}.GetNewClosure() -force  | out-null
-
+    $script:GlobalFunctions.Add($outername)
 }
 <#
         .SYNOPSIS 
@@ -867,6 +868,7 @@ Function Register-VisioConnector{
     [switch]$bidirectional,
     $Master)
     new-item -Path Function:\ -Name "global`:$Name" -value {param($From,$To,$Label) New-VisioConnector -from $From -to $To -name $Name -color $Color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $Label -Master $Master}.GetNewClosure() -force  | out-null
+    $script:GlobalFunctions.Add($Name)
 }
 
 
@@ -1071,6 +1073,9 @@ Function Complete-Diagram{
     $Visio.ActiveDocument.Save() 
     if($Close){
         $Visio.Quit()
+    }
+    foreach($name in $script:GlobalFunctions){
+        remove-item -Path "Function`:$name"
     }
 }
 
