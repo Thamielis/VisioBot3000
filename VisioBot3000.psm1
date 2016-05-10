@@ -52,8 +52,6 @@ Function New-VisioApplication{
         }
         [System.Collections.ArrayList]$script:StencilSearchPath=@(join-path (join-path $script:Visio.Path 'Visio Content') $script:Visio.Language)
     }
-
-
 }
 
 
@@ -552,12 +550,13 @@ Function New-VisioRectangle{
 Function New-VisioConnector{
     [CmdletBinding(SupportsShouldProcess=$True)]
     Param([array]$From,
-        $To,
-        $Name,
+        [array]$To,
+        [string]$Name,
         [System.Drawing.Color]$Color,
         [switch]$Arrow,
         [switch]$bidirectional, 
-    $Label)
+        [string]$Label,
+        $Master)
     $ColorFormula=get-VisioColorFormula $color
     if($PSCmdlet.ShouldProcess('Visio','Connect shapes with a connector')){
         $CurrentPage=Get-VisioPage
@@ -575,8 +574,17 @@ Function New-VisioConnector{
                     $connector=$CurrentPage.Shapes | Where-Object {$_.Name -eq $CalculatedName}
                 }
                 if (-not (get-variable Connector -Scope Local -ErrorAction Ignore)){
-                    $source.AutoConnect($dest,0)
-                    $connector=$CurrentPage.Shapes('Dynamic Connector')| Select-Object -first 1
+                    if($Master){
+                        if($Master -is [string]){
+                           $Master=Get-VisioShape $Master
+                           $ConnectorNameToFind=$Master.Name
+                        }
+                        $source.AutoConnect($dest,0,$Master)
+                   } else { 
+                        $ConnectorNameToFind='Dynamic Connector'
+                        $source.AutoConnect($dest,0)
+                    }
+                    $connector=$CurrentPage.Shapes($ConnectorNameToFind)| Select-Object -first 1
                     $connector.Name=$CalculatedName
                 }
                 $connector.Text=$Label
@@ -725,10 +733,10 @@ Function Register-VisioStencil{
             if(-not(test-path $path)){
                 #and the filename doesn't exist in the current directory
                 foreach($folder in $StencilSearchPath){
-                   if (test-path (join-path -Path $folder -ChildPath $path)){
-                      $path=join-path -Path $folder -ChildPath $path
-                      break
-                   }
+                    if (test-path (join-path -Path $folder -ChildPath $path)){
+                        $path=join-path -Path $folder -ChildPath $path
+                        break
+                    }
                 }
             }
         }
@@ -774,7 +782,7 @@ Function Register-VisioShape{
     [string]$MasterName)
  
     if(!$MasterName){
-      $MasterName=$Name
+        $MasterName=$Name
     }
     $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $MasterName}
     $script:Shapes[$Name]=$newshape
@@ -856,8 +864,9 @@ Function Register-VisioConnector{
     Param([string]$Name,
         [System.Drawing.Color]$Color,
         [switch]$Arrow,
-    [switch]$bidirectional)
-    new-item -Path Function:\ -Name "global`:$Name" -value {param($From,$To,$Label) New-VisioConnector -from $From -to $To -name $Name -color $Color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $Label}.GetNewClosure() -force  | out-null
+    [switch]$bidirectional,
+    $Master)
+    new-item -Path Function:\ -Name "global`:$Name" -value {param($From,$To,$Label) New-VisioConnector -from $From -to $To -name $Name -color $Color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $Label -Master $Master}.GetNewClosure() -force  | out-null
 }
 
 
