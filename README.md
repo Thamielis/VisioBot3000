@@ -29,6 +29,20 @@ Primitive Operations
 * Register-VisioContainer
 * Register-VisioConnector
 * Get-VisioShape
+* New-VisioHyperLink
+* New-VisioSelection
+* Set-VisioShapeData
+* Get-VisioShapeData
+* Complete-Diagram
+* New-VisioLayer
+* Set-NextShapePosition
+* Get-NextShapePosition
+* Set-RelativePositionDirection
+* Set-VisioText
+* Get-VisioColorFormula
+* Add-StencilSearchPath
+* Set-StencilSearchPath
+* Get-StencilSearchPath
 
 Aliases
 -------
@@ -37,6 +51,8 @@ Aliases
 * Shape (Register-VisioShape)
 * Container (Register-VisioContainer)
 * Connector (Register-VisioConnector)
+
+Lots of examples in the "Examples" folder
 
 Example using "Primitives"
 --------------------------
