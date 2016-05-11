@@ -6,7 +6,7 @@ New-VisioDocument C:\temp\TestVisioPrimitives.vsdx
 
 #tell Visio what Stencils I want to use and give them "nicknames"
 Register-VisioStencil -Name Containers -Path C:\temp\MyContainers.vssx 
-Register-VisioStencil -Name Servers -Path C:\temp\SERVER_U.vssx
+Register-VisioStencil -Name Servers -Path SERVER_U.vssx
 
 #pick a master from one of those stencils and give it a nickname
 Register-VisioShape -Name WebServer -From Servers -MasterName 'Web Server'

@@ -1,0 +1,9 @@
+﻿New-Alias -Name Diagram -Value New-VisioDocument
+New-Alias -Name Stencil -Value Register-VisioStencil
+New-Alias -Name Shape -Value Register-VisioShape
+New-Alias -Name Container -Value Register-VisioContainer
+New-Alias -Name Connector -Value Register-VisioConnector
+New-Alias -Name HyperLink -Value New-VisioHyperlink
+New-Alias -Name Layer -value New-VisioLayer
+New-Alias -Name Legend -value Set-VisioText
+New-Alias -name Complete-Diagram -value Complete-VisioDocument

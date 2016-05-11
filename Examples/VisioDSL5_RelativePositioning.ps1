@@ -6,7 +6,7 @@ import-module VisioBot3000 -Force
 Diagram C:\temp\TestVisio5.vsdx -From C:\temp\IntegrationDiagram.vstx
 
 # Define shapes, containers, and connectors for the diagram
-Stencil Servers -From C:\temp\SERVER_U.vssx
+Stencil Servers -From SERVER_U.vssx
 Stencil Containers -From C:\temp\MyContainers.vssx 
 Shape WebServer -From Servers -MasterName 'Web Server'
 Shape SQLServer -From Servers -masterName 'Database Server'
