@@ -16,7 +16,7 @@
  function Add-StencilSearchPath{
     [CmdletBinding()]
     Param([string]$Path)
-    $script:StencilSearchPath.Add($Path)
+    $script:StencilSearchPath.Add($Path) | Out-Null
 }
 
 <#

@@ -102,7 +102,7 @@ Function Register-VisioShape{
     $script:Shapes[$Name]=$newshape
     $outerName=$Name 
     new-item -Path Function:\ -Name "global`:$outername" -value {param($Label, $X,$Y, $Name) $Shape=get-visioshape $outername; New-VisioShape $Shape $Label $X $Y -name $Name}.GetNewClosure() -force  | out-null
-    $script:GlobalFunctions.Add($outerName)
+    $script:GlobalFunctions.Add($outerName) | Out-Null
 }
 
 <#

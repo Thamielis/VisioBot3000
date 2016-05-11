@@ -114,5 +114,5 @@ Function Register-VisioContainer{
     $script:Shapes[$Name]=$newshape
     $outerName=$Name
     new-item -Path Function:\ -Name "global`:$outername" -value {param($Label,$Contents,$Name) New-VisioContainer -label $Label -contents $Contents -shape $outername -name $Name}.GetNewClosure() -force  | out-null
-    $script:GlobalFunctions.Add($outername)
+    $script:GlobalFunctions.Add($outername) | Out-Null
 }

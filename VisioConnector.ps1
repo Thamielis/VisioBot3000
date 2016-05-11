@@ -138,6 +138,6 @@ Function Register-VisioConnector{
         [switch]$bidirectional,
     $Master)
     new-item -Path Function:\ -Name "global`:$Name" -value {param($From,$To,$Label) New-VisioConnector -from $From -to $To -name $Name -color $Color -Arrow:$Arrow.IsPresent -bidirectional:$bidirectional.IsPresent $Label -Master $Master}.GetNewClosure() -force  | out-null
-    $script:GlobalFunctions.Add($Name)
+    $script:GlobalFunctions.Add($Name) | Out-Null
 }
 
