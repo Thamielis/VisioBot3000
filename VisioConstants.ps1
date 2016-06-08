@@ -2964,6 +2964,16 @@ ArcSweepFlagConcave = 0
 ;ZoomNone = 0 
 ;ZoomVisio = 2 
 ;ZoomVisioExact = 4 
+
+#Public Enum VisDiagramServices
+;ServiceNone = 0
+;ServiceAll = -1
+;ServiceAutoSizePage = 1
+;ServiceStructureBasic = 2
+;ServiceStructureFull = 4
+;ServiceVersion140 = 7
+;ServiceVersion150 = 8
+
 }
 #End Enum 
 

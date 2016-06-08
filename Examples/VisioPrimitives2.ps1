@@ -1,8 +1,12 @@
 ﻿Import-Module VisioBot3000 -Force
  
+
 #start Visio and create a new document
 New-VisioApplication
 New-VisioDocument C:\temp\TestVisioPrimitives.vsdx 
+
+$doc=Get-VisioDocument
+Set-VisioDiagramServices -Document $doc -Value $vis.ServiceAll
 
 #tell Visio what Stencils I want to use and give them "nicknames"
 Register-VisioStencil -Name Containers -Path C:\temp\MyContainers.vssx 
