@@ -28,10 +28,7 @@
 #>
 function Import-VisioSettings{
 [CmdletBinding()]
-Param([string]$path)
-    $dir=Split-Path -Path $path -Parent 
-    $file=split-path -Path $path -leaf
-    $settings=Import-LocalizedData -FileName $file -BaseDirectory $dir  
+Param([Microsoft.PowerShell.DesiredStateConfiguration.ArgumentToConfigurationDataTransformation()]$settings)
     if($settings.StencilPaths){
         $settings.StencilPaths  | foreach-object {Add-StencilSearchPath -Path $_}
     }
