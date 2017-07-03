@@ -11,7 +11,7 @@ Stencil Containers -From C:\temp\MyContainers.vssx
 Shape WebServer -From Servers -MasterName 'Web Server'
 Shape SQLServer -From Servers -masterName 'Database Server'
 Container Location -From Containers -MasterName 'Location'
-
+Connector SQL -color Red -Arrow 
 Set-NextShapePosition -x 3 -y 5.5
 Location Datacenter {
        WebServer PrimaryServer

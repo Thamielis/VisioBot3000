@@ -29,45 +29,50 @@
         }
 
 #>
-Function New-VisioContainer{
-    [CmdletBinding(SupportsShouldProcess=$True)]
+Function New-VisioContainer {
+    [CmdletBinding(SupportsShouldProcess = $True)]
     Param( [string]$Name,
         [Scriptblock]$Contents,
         $Shape,
         $Label)
-    if(!$Name){
-        $Name=$Label
+
+    $TEMPvisio = get-visioapplication
+    $TEMPdoc = $TEMPvisio.ActiveDocument
+    $TEMPpage = $TEMPdoc.Pages[1]
+        
+    if (!$Name) {
+        $Name = $Label
     }
-    if ($shape -is [string]){
-        $shape=Get-VisioShape $shape
+    if ($shape -is [string]) {
+        $shape = Get-VisioShape $shape
     }
-     if($PSCmdlet.ShouldProcess('Visio','Drop a container around shapes')){
-        $page=Get-VisioPage
-        if($Contents){
-            [array]$containedObjects=& $Contents
-            $firstShape=$containedObjects[0]
-            if($updatemode){
-                $droppedContainer=$page.Shapes | Where-Object {$_.Name -eq $Name}
+    if ($PSCmdlet.ShouldProcess('Visio', 'Drop a container around shapes')) {
+        $page = Get-VisioPage
+        if ($Contents) {
+            [array]$containedObjects = & $Contents
+            $firstShape = $containedObjects[0]
+            if ($updatemode) {
+                $droppedContainer = $page.Shapes | Where-Object {$_.Name -eq $Name}
             }
         
-            if(get-variable droppedContainer -Scope Local -ErrorAction Ignore){
-                If($droppedContainer.ContainerProperties.GetMemberShapes(16+2) -notcontains $firstShape.ID){
-                    $droppedcontainer.ContainerProperties.AddMember($firstShape,2)
+            if (get-variable droppedContainer -Scope Local -ErrorAction Ignore) {
+                If ($droppedContainer.ContainerProperties.GetMemberShapes(16 + 2) -notcontains $firstShape.ID) {
+                    $droppedcontainer.ContainerProperties.AddMember($firstShape, 2)
                 }
             } else {
-                $sel=New-VisioSelection $firstShape -Visible
-                $droppedContainer=$page.DropContainer($Shape,$page.Application.ActiveWindow.Selection)
-                $droppedContainer.Name=$Name
+                $sel = New-VisioSelection $firstShape -Visible
+                $droppedContainer = $page.DropContainer($Shape, $page.Application.ActiveWindow.Selection)
+                $droppedContainer.Name = $Name
             } 
             $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
             $containedObjects | select-object -Skip 1 | % { 
-                if(-not $updatemode -or ($droppedContainer.ContainerProperties.GetMemberShapes(16+2) -notcontains $_.ID)){
-                    $droppedcontainer.ContainerProperties.AddMember($_,1)
+                if (-not $updatemode -or ($droppedContainer.ContainerProperties.GetMemberShapes(16 + 2) -notcontains $_.ID)) {
+                    $droppedcontainer.ContainerProperties.AddMember($_, 1)
                 }
             }        
             $droppedContainer.ContainerProperties.FitToContents()
-            $droppedContainer.Text=$Label
-            $Script:LastDroppedObject=$droppedContainer
+            $droppedContainer.Text = $Label
+            $Script:LastDroppedObject = $droppedContainer
 
             $droppedContainer
 
@@ -101,18 +106,18 @@ Function New-VisioContainer{
         Register-VisioContainer -Name BasicContainer -StencilName Containers -MasterName Plain
 
 #>
-Function Register-VisioContainer{
+Function Register-VisioContainer {
     [CmdletBinding()]
     Param([string]$Name,
         [Alias('From')][string]$StencilName,
-    [string]$MasterName)
+        [string]$MasterName)
  
-    if(!$MasterName){
-        $MasterName=$Name
+    if (!$MasterName) {
+        $MasterName = $Name
     }
-    $newShape=$stencils[$StencilName].Masters | Where-Object {$_.Name -eq $MasterName}
-    $script:Shapes[$Name]=$newshape
-    $outerName=$Name
-    new-item -Path Function:\ -Name "global`:$outername" -value {param($Label,$Contents,$Name) New-VisioContainer -label $Label -contents $Contents -shape $outername -name $Name}.GetNewClosure() -force  | out-null
+    $newShape = $stencils[$StencilName].Masters | Where-Object {$_.Name -eq $MasterName}
+    $script:Shapes[$Name] = $newshape
+    $outerName = $Name
+    new-item -Path Function:\ -Name "global`:$outername" -value {param($Label, $Contents, $Name) New-VisioContainer -label $Label -contents $Contents -shape $outername -name $Name}.GetNewClosure() -force  | out-null
     $script:GlobalFunctions.Add($outername) | Out-Null
 }
