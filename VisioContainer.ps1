@@ -36,9 +36,9 @@ Function New-VisioContainer {
         $Shape,
         $Label)
 
-    $TEMPvisio = get-visioapplication
+    $TEMPvisio = $script:Visio
     $TEMPdoc = $TEMPvisio.ActiveDocument
-    $TEMPpage = $TEMPdoc.Pages[1]
+    [void]$TEMPdoc.Pages[1]
         
     if (!$Name) {
         $Name = $Label
