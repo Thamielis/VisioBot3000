@@ -1,8 +1,9 @@
 ﻿#clean-up because I'm re-running this over and over
 stop-process -Name VISIO -ea SilentlyContinue
 import-module VisioBot3000 -Force
+#remove-item c:\temp\testvisio4.vsdx -force -silentlycontinue
 
-Diagram C:\temp\TestVisio3.vsdx  -Update
+Diagram C:\temp\TestVisio4.vsdx -Update
 
 # Define shapes, containers, and connectors for the diagram
 Stencil Containers -From C:\temp\MyContainers.vssx 
