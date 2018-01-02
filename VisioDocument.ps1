@@ -40,7 +40,7 @@ Function Open-VisioDocument{
     Param([string]$Path,
         $Visio=$script:Visio,
     [switch]$Update)
-    if(!$Visio){
+    if(!(Test-VisioApplication)){
         New-VisioApplication
         $Visio=$script:Visio
     }
@@ -98,7 +98,7 @@ function New-VisioDocument{
         [switch]$Update,
     [switch]$Landscape,[switch]$portrait)
     if($PSCmdlet.ShouldProcess('Creating a new Visio Document','')){
-        if(!$Visio){
+        if(!(Test-VisioApplication)){
             New-VisioApplication
             $Visio=$script:Visio
         }
@@ -147,6 +147,9 @@ function New-VisioDocument{
 Function Get-VisioDocument{
     [CmdletBinding()]
     Param($Visio=$script:Visio)
+    if(!(Test-VisioApplication)){
+        New-VisioApplication 
+    }
     return $Visio.ActiveDocument
 }
 
@@ -172,12 +175,16 @@ Function Get-VisioDocument{
 Function Complete-VisioDocument{
     [CmdletBinding()]
     Param([switch]$Close)
-    $script:updateMode=$false
-    $Visio.ActiveDocument.Save() 
-    if($Close){
-        $Visio.Quit()
-    }
-    foreach($name in $script:GlobalFunctions){
-        remove-item -Path "Function`:$name"
+    if(Test-VisioApplication){
+        $script:updateMode=$false
+        $Visio.ActiveDocument.Save() 
+        if($Close){
+            $Visio.Quit()
+        }
+        foreach($name in $script:GlobalFunctions){
+            remove-item -Path "Function`:$name"
+        }
+    } else {
+        Write-Warning 'Visio application is not loaded'
     }
 }

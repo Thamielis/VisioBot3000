@@ -62,8 +62,30 @@ Function New-VisioApplication{
 Function Get-VisioApplication{
     [CmdletBinding()]
     Param()
-    if(!$script:Visio){
+    if(!(Test-VisioApplication)){
         New-VisioApplication
     }
     return $Visio
 } 
+
+<#
+        .SYNOPSIS 
+        Outputs $true if the stored Visio application object is live
+
+        .DESCRIPTION
+        Outputs $true if the stored Visio application object is live
+
+        .INPUTS
+        None. You cannot pipe objects to Add-Extension.
+
+        .OUTPUTS
+        Boolean
+
+        .EXAMPLE
+        If(Test-VisioApplication){ #do something with the application }
+#>
+Function Test-VisioApplication{
+    [CmdletBinding()]
+    Param()
+    $Script:Visio -and $Script:Visio.Documents
+}
