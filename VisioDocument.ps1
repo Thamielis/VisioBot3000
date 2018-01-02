@@ -118,7 +118,9 @@ function New-VisioDocument{
         } elseif ($portrait) {
             $Visio.ActivePage.Shapes['ThePage'].CellsU('PrintPageOrientation')=1
         }
-        $Visio.ActiveDocument.SaveAs($Path) | Out-Null
+        if($path){
+            $Visio.ActiveDocument.SaveAs($Path) | Out-Null
+        }
     }
 }
 
