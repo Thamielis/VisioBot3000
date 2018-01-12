@@ -26,7 +26,7 @@
 
 
 #>
-function Import-VisioSettings{
+function Import-VisioConfiguration{
 [CmdletBinding()]
 Param([Microsoft.PowerShell.DesiredStateConfiguration.ArgumentToConfigurationDataTransformation()]$settings)
     if($settings.StencilPaths){
@@ -34,19 +34,20 @@ Param([Microsoft.PowerShell.DesiredStateConfiguration.ArgumentToConfigurationDat
     }
 
     if($settings.Stencils){
-        $Settings.Stencils.GetEnumerator() | foreach{Register-VisioStencil -Name $_.Key -Path $_.Value}
+        $Settings.Stencils.GetEnumerator() | foreach-object {Register-VisioStencil -Name $_.Key -Path $_.Value}
     }
 
     if($settings.Shapes){
-        $Settings.Shapes.GetEnumerator() | foreach{Register-VisioShape -Name $_.Key -From $_.Value[0] -MasterName $_.Value[1]}
+        $Settings.Shapes.GetEnumerator() | foreach-object {Register-VisioShape -Name $_.Key -From $_.Value[0] -MasterName $_.Value[1]}
     }
    if($settings.Containers){
-        $Settings.Containers.GetEnumerator() | foreach{Register-VisioContainer -Name $_.Key -From $_.Value[0] -MasterName $_.Value[1]}
+        $Settings.Containers.GetEnumerator() | foreach-object {Register-VisioContainer -Name $_.Key -From $_.Value[0] -MasterName $_.Value[1]}
     }
   if($settings.Connectors){
         
-        $Settings.Connectors.GetEnumerator() | foreach{$options=$_.Value;Register-VisioConnector -Name $_.Key @options}
+        $Settings.Connectors.GetEnumerator() | foreach-object {$options=$_.Value;Register-VisioConnector -Name $_.Key @options}
     }
 
 
 }
+New-Alias -Name Import-VisioSettings -value Import-VisioConfiguration

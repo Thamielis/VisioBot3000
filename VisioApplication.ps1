@@ -86,6 +86,7 @@ Function Get-VisioApplication{
 #>
 Function Test-VisioApplication{
     [CmdletBinding()]
+    [OutputType([System.Boolean])]
     Param()
     $Script:Visio -and $Script:Visio.Documents
 }

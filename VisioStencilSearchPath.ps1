@@ -35,9 +35,11 @@
         Set-StencilSearchPath 'C:\temp','C:\Program Files (x86)\Microsoft Office\Office15\Visio Content'
  #> 
  function Set-StencilSearchPath{
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     Param([string[]]$Path)
-    $script:StencilSearchPath=$Path
+    if($PSCmdlet.ShouldProcess("Setting Stencil Search Path to $path")){
+        $script:StencilSearchPath=$Path
+    }
 }
 
 <#

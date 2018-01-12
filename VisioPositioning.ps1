@@ -17,8 +17,11 @@
 
 #>
 Function Set-NextShapePosition{
+    [CmdletBinding(SupportsShouldProcess=$true)]
     Param($X,$Y)
-    $script:LastDroppedObject=@{X=$X;y=$Y}
+    if($PSCmdlet.ShouldProcess("Setting next shape position to ($x,$y)")){
+        $script:LastDroppedObject=@{X=$X;y=$Y}
+    }
 }
 
 <#
@@ -41,12 +44,13 @@ Function Set-NextShapePosition{
 #>
 Function Get-NextShapePosition{
     [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
     Param()
     if($LastDroppedObject -eq 0){
         #nothing dropped yet, start at top-left-ish
         $p=Get-VisioPage
         
-        return @{X=1;Y=$p.Pagesheet.Cells('PAgeHeight').ResultIU-1}
+        return @{X=1;Y=$p.Pagesheet.Cells('PageHeight').ResultIU-1}
     } elseif ($LastDroppedObject -is [hashtable]) {
         return $LastDroppedObject
     } else {

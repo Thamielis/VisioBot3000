@@ -17,10 +17,11 @@
 #> 
 
 function Set-VisioText{
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     Param([Hashtable]$Map)
     
     foreach($key in $Map.Keys){
+        $originalKey-$key
         $text=$map[$key]
         $p=Get-VisioPage
         while($key.Contains('/')){
@@ -28,6 +29,8 @@ function Set-VisioText{
             $p=$p.Shapes[$prefix]
         }
         $Shape=$p.Shapes[$key]
-        $Shape.Characters.Text="$text"
+        if($PSCmdlet.ShouldProcess("Setting $OriginalKey to $text")){
+            $Shape.Characters.Text="$text"
+        }
     }
 } 

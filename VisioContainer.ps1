@@ -58,12 +58,11 @@ Function New-VisioContainer {
                     $droppedcontainer.ContainerProperties.AddMember($firstShape, 2)
                 }
             } else {
-                $sel = New-VisioSelection $firstShape -Visible
                 $droppedContainer = $page.DropContainer($Shape, $page.Application.ActiveWindow.Selection)
                 $droppedContainer.Name = $Name
             } 
             $droppedContainer.ContainerProperties.SetMargin($vis.PageUnits, 0.25)
-            $containedObjects | select-object -Skip 1 | % { 
+            $containedObjects | select-object -Skip 1 | foreach-object { 
                 if (-not $updatemode -or ($droppedContainer.ContainerProperties.GetMemberShapes(16 + 2) -notcontains $_.ID)) {
                     $droppedcontainer.ContainerProperties.AddMember($_, 1)
                 }

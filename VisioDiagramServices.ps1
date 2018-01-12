@@ -38,9 +38,11 @@ $Document.DiagramServicesEnabled
     Int
 #>
 function Set-VisioDiagramServices{
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess=$true)]
 Param($Document,
       [int]$Value)
 
-$Document.DiagramServicesEnabled=$Value
+    if($PSCmdlet.ShouldProcess("Set Visio Diagram Services to $value")){
+        $Document.DiagramServicesEnabled=$Value
+    }
 }

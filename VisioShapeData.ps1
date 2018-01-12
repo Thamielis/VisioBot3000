@@ -24,9 +24,8 @@ Function Get-VisioShapeData{
     [CmdletBinding()]
     Param($Shape,
     $Name)
-    if($PSCmdlet.ShouldProcess('Visio','Retrieve the value from a custom shape data element')){
+    
         $Shape.Cells("Prop.$Name").Formula.TrimStart('"').TrimEnd('"') 
-    }
 }
 
 <#

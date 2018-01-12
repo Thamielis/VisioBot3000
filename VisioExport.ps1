@@ -25,7 +25,7 @@ Param([Parameter(ValueFromPipeline=$true)]$Object)
     if($Object | get-member PageSheet){
         #get the shapes that aren't in containers
         $ObjectHash.Add('Type','Page')
-        $containedObjects= $Object.Shapes | Where-Object {$_.MemberOfContainers.Count -eq 0} |foreach {Convert-VisioObjectToPSObject $_}
+        $containedObjects= $Object.Shapes | Where-Object {$_.MemberOfContainers.Count -eq 0} |foreach-object {Convert-VisioObjectToPSObject $_}
     } elseif ($Object.Style -eq 'Connector'){
         #it's a connector
         $ObjectHash.Add('From',$Object.Connects[1].ToSheet.Name)
@@ -34,7 +34,7 @@ Param([Parameter(ValueFromPipeline=$true)]$Object)
         #get the top-level objects contained
         if($Object.ContainerProperties){
             $containedObjectIDs=$Object.ContainerProperties.GetMemberShapes(16+2) 
-            $containedObjects=$ContainedObjectIDs|foreach {Convert-VisioObjectToPSObject ($Object.ContainingPage.Shapes | Where-Object id -EQ $_)}
+            $containedObjects=$ContainedObjectIDs|foreach-object {Convert-VisioObjectToPSObject ($Object.ContainingPage.Shapes | Where-Object id -EQ $_)}
         }
     }
     if($containedObjects){

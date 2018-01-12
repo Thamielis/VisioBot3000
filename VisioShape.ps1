@@ -44,7 +44,7 @@ Function New-VisioShape{
         if($updateMode){
             $DroppedShape=$p.Shapes | Where-Object {$_.Name -eq $Label}
         }
-        if(-not (get-variable DroppedShape -Scope Local -ErrorAction Ignore) -or $DroppedShape -eq $null){
+        if(-not (get-variable DroppedShape -Scope Local -ErrorAction Ignore) -or ($null -eq $DroppedShape)){
             if(-not $X){
                 $RelativePosition=Get-NextShapePosition
                 $X=$RelativePosition.X

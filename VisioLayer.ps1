@@ -34,7 +34,7 @@ Function New-VisioLayer{
         }
         $p=$Visio.ActivePage
         $layer=$p.Layers | Where-Object {$_.Name -eq $LayerName}
-        if ($layer -eq $null){
+        if ($null -eq $layer){
             $layer=$p.Layers.Add($LayerName) 
         }
         if ($Contents -is [scriptblock]){

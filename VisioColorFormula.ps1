@@ -14,6 +14,7 @@
  #> 
  function Get-VisioColorFormula{
     [CmdletBinding()]
+    [OutputType([System.String])]
     Param([System.Drawing.Color]$color)
     
     return "=rgb($($Color.R),$($Color.G),$($Color.B))"
