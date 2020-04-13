@@ -3,8 +3,8 @@
 Diagram C:\temp\TestVisio3.vsdx 
 
 # Define shapes, containers, and connectors for the diagram
-Stencil Containers -From C:\temp\MyContainers.vssx 
-Stencil Servers -From SERVER_U.vssx
+Stencil Containers -From "C:\GitHub\PowerShell\VisioBot3000\Examples\MyContainers.vssx" 
+Stencil Servers -From SERVER_M.vssx
 Shape WebServer -From Servers -MasterName 'Web Server'
 Container Location -From Containers -MasterName 'Location'
 Container Domain -From Containers -MasterName 'Domain'
@@ -13,14 +13,14 @@ Connector SQL -Color Green -arrow -bidirectional
 
 #this is the diagram
 Logical MyFarm {
-    Location MyCity {
+    Get-Location MyCity {
         Domain MyDomain_A {
 		    WebServer PrimaryServer  
             WebServer SecondaryServer 
 	    }
     }
 
-    Location DRSite {
+    Get-Location DRSite {
         Domain MyDomain_B {
 		    WebServer BackupServer  
   	    }

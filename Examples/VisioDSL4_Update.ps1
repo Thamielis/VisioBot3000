@@ -7,7 +7,7 @@ Diagram C:\temp\TestVisio4.vsdx -Update
 
 # Define shapes, containers, and connectors for the diagram
 Stencil Containers -From C:\temp\MyContainers.vssx 
-Stencil Servers -From SERVER_U.vssx
+Stencil Servers -From SERVER_M.vssx
 Shape WebServer -From Servers -MasterName 'Web Server'
 Container Location -From Containers -MasterName 'Location'
 Container Domain -From Containers -MasterName 'Domain'
@@ -16,14 +16,14 @@ Connector SQL -Color Red -arrow
 
 #this is the diagram
 Logical MyFarm {
-    Location MyCity {
+    Get-Location MyCity {
         Domain MyDomain  {
             WebServer PrimaryServer
             WebServer HotSpare
 
         }
     }
-    Location DRSite {
+    Get-Location DRSite {
         Domain MyDomain -name SiteB_MyDomain {
             Set-RelativePositionDirection Vertical
 		    WebServer BackupServer 

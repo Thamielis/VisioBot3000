@@ -1,9 +1,9 @@
-﻿ipmo VisioBot3000 -Force
+﻿Import-Module VisioBot3000 -Force
 
 Diagram C:\temp\TestVisio_CustomConnector.vsdx
 
-Stencil Servers -Path SERVER_U.vssx
-Stencil Connectors -path CONNEC_U.VSSX
+Stencil Servers -Path SERVER_M.vssx
+Stencil Connectors -path CONNEC_M.VSSX
 
 Shape WebServer -From Servers -MasterName 'Web Server'
 Shape CurveConnector -From Connectors -MasterName 'Curve Connect 1'

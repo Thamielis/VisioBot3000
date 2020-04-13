@@ -3,8 +3,8 @@
 New-VisioApplication
 
 New-VisioDocument C:\temp\VisioPrimitives1.vsdx 
-Register-VisioStencil -Name Containers -Path C:\temp\MyContainers.vssx 
-Register-VisioStencil -Name Servers -Path SERVER_U.vssx
+Register-VisioStencil -Name Containers -Path "C:\GitHub\PowerShell\VisioBot3000\Examples\MyContainers.vssx" 
+Register-VisioStencil -Name Servers -Path SERVER_M.vssx
 Register-VisioShape -Name WebServer -From Servers -MasterName 'Web Server'
 Register-VisioContainer -Name Location -From Containers -MasterName 'Location'
 Register-VisioContainer -Name Domain -From Containers -MasterName 'Domain'

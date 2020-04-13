@@ -9,8 +9,8 @@ $doc=Get-VisioDocument
 Set-VisioDiagramServices -Document $doc -Value $vis.ServiceAll
 
 #tell Visio what Stencils I want to use and give them "nicknames"
-Register-VisioStencil -Name Containers -Path C:\temp\MyContainers.vssx 
-Register-VisioStencil -Name Servers -Path SERVER_U.vssx
+Register-VisioStencil -Name Containers -Path "C:\GitHub\PowerShell\VisioBot3000\Examples\MyContainers.vssx" 
+Register-VisioStencil -Name Servers -Path SERVER_M.vssx
 
 #pick a master from one of those stencils and give it a nickname
 Register-VisioShape -Name WebServer -From Servers -MasterName 'Web Server'

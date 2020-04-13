@@ -14,7 +14,7 @@ AutoConnectDirNone = 0
 AutoConnectDirRight = 4 
 AutoConnectDirUp = 1 
 #End Enum 
- 
+
 #Public Enum VisAutoLinkBehaviors 
 AutoLinkDontReplaceExistingLinks = 16 
 AutoLinkGenericProgressBar = 2 
